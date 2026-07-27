@@ -1,7 +1,9 @@
 # ---- Datasets & large local data (kept out of the repo) ----
 Dataset/
 Dataset_mendeley/
-Test/
+# Anchored to the repo root: on Windows (core.ignorecase) a bare "Test/"
+# would also ignore source dirs like frontend/src/test/.
+/Test/
 _mendeley_raw/
 
 # ---- Large model files (use DVC or Releases for distribution) ----
