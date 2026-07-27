@@ -1,0 +1,22 @@
+data:
+  dataset_dir: "../data/chest_xray"     # estrutura: train/val/test × 4 classes
+  image_size: 256
+  batch_size: 32
+  seed: 42
+
+model:
+  backbone: "resnet50"
+  weights: "imagenet"
+  freeze_backbone_epochs: 5
+  unfreeze_lr: 1.0e-5
+  head_lr: 1.0e-3
+  dropout: 0.3
+
+training:
+  epochs: 30
+  early_stopping_patience: 5
+  class_weights: "balanced"    # sklearn compute_class_weight
+
+mlflow:
+  experiment_name: "radioai-chest-xray"
+  tracking_uri: "mlruns"       # local. Em prod: http://mlflow-server:5000

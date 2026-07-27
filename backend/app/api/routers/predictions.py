@@ -5,7 +5,9 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, Query, Request, UploadFile, status
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from sqlalchemy import delete, func, select
 
 from app.api.deps import CurrentUser, DbSession
@@ -23,6 +25,7 @@ from app.storage import get_storage
 
 router = APIRouter(prefix="/predictions", tags=["predictions"])
 logger = get_logger(__name__)
+limiter = Limiter(key_func=get_remote_address)
 
 ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp", "image/bmp"}
 MAX_FILE_BYTES = 10 * 1024 * 1024  # 10 MB
@@ -37,7 +40,9 @@ def _probs_to_list(probs: dict) -> list[ClassProbability]:
 
 
 @router.post("", response_model=PredictionResult, status_code=status.HTTP_201_CREATED)
+@limiter.limit("10/minute")
 async def create_prediction(
+    request: Request,
     current_user: CurrentUser,
     db: DbSession,
     file: Annotated[UploadFile, File(description="Chest X-ray image")],

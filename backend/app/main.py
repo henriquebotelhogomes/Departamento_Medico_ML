@@ -11,6 +11,9 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from app import __version__
 from app.api.routers import auth, predictions, stats, system
@@ -18,6 +21,7 @@ from app.core.config import settings
 from app.core.logging import configure_logging, get_logger, request_id_var
 from app.db.base import Base
 from app.db.session import AsyncSessionLocal, engine
+from app.middleware.security import SecurityHeadersMiddleware
 from app.ml.predictor import get_predictor
 from app.seed import seed_demo_user
 
@@ -61,12 +65,21 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    # --- Rate limiting ---
+    limiter = Limiter(key_func=get_remote_address)
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+    # --- Security headers ---
+    app.add_middleware(SecurityHeadersMiddleware)
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
+        max_age=600,
     )
 
     @app.middleware("http")

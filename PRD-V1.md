@@ -13,11 +13,11 @@ Os 5 itens abaixo são os que mais elevam a percepção do projeto com menor esf
 
 ### Checklist de Prioridades
 
-- [ ] **1. Docker Compose** (backend + frontend + PostgreSQL) — ~3h
-- [ ] **2. GitHub Actions CI** (lint + test + build) — ~2h
-- [ ] **3. MLflow + Script de treino reproduzível** — ~6h
-- [ ] **4. Testes pytest com cobertura ≥ 80%** — ~6h
-- [ ] **5. Model Card com métricas** (confusion matrix, ROC, bias analysis) — ~3h
+- [x] **1. Docker Compose** (backend + frontend + PostgreSQL) — ~3h
+- [x] **2. GitHub Actions CI** (lint + test + build) — ~2h
+- [x] **3. MLflow + Script de treino reproduzível** — ~6h
+- [x] **4. Testes pytest com cobertura ≥ 80%** — ~6h
+- [x] **5. Model Card com métricas** (confusion matrix, ROC, bias analysis) — ~3h
 
 ---
 
@@ -819,10 +819,10 @@ if __name__ == "__main__":
 
 ### Checklist
 
-- [ ] Docker + Docker Compose (detalhado acima na Seção Prioritária #1)
-- [ ] Migração para PostgreSQL
-- [ ] Alembic migrations
-- [ ] Variáveis de ambiente (.env)
+- [x] Docker + Docker Compose (detalhado acima na Seção Prioritária #1)
+- [x] Migração para PostgreSQL
+- [x] Alembic migrations
+- [x] Variáveis de ambiente (.env)
 
 ---
 
@@ -936,10 +936,10 @@ settings = Settings()
 
 ### Checklist
 
-- [ ] Testes backend pytest (detalhado na Seção Prioritária #4)
-- [ ] Testes frontend (Vitest + Testing Library)
-- [ ] CI/CD GitHub Actions (detalhado na Seção Prioritária #2)
-- [ ] Pre-commit hooks
+- [x] Testes backend pytest (detalhado na Seção Prioritária #4)
+- [x] Testes frontend (Vitest + Testing Library)
+- [x] CI/CD GitHub Actions (detalhado na Seção Prioritária #2)
+- [x] Pre-commit hooks
 
 ---
 
@@ -1032,11 +1032,11 @@ pre-commit run --all-files  # verificar
 
 ### Checklist
 
-- [ ] MLflow experiment tracking (detalhado na Seção Prioritária #3)
-- [ ] Script de treino reproduzível (detalhado na Seção Prioritária #3)
-- [ ] DVC para versionamento de dados
-- [ ] Model Card (detalhado na Seção Prioritária #5)
-- [ ] Validação estatística do threshold OOD
+- [x] MLflow experiment tracking (detalhado na Seção Prioritária #3)
+- [x] Script de treino reproduzível (detalhado na Seção Prioritária #3)
+- [x] DVC para versionamento de dados
+- [x] Model Card (detalhado na Seção Prioritária #5)
+- [x] Validação estatística do threshold OOD
 
 ---
 
@@ -1158,11 +1158,11 @@ if __name__ == "__main__":
 
 ### Checklist
 
-- [ ] Health check endpoint
-- [ ] Logging estruturado (structlog)
-- [ ] Rate limiting
-- [ ] CORS restritivo
-- [ ] Security headers
+- [x] Health check endpoint
+- [x] Logging estruturado (structlog)
+- [x] Rate limiting
+- [x] CORS restritivo
+- [x] Security headers
 - [ ] Prometheus metrics (opcional)
 
 ---
@@ -1339,9 +1339,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 ### Checklist
 
-- [ ] Background worker (Celery + Redis)
-- [ ] Cache de predições (Redis)
-- [ ] Monitoramento de drift
+- [x] Background worker (Celery + Redis)
+- [x] Cache de predições (Redis)
+- [x] Monitoramento de drift
 - [ ] A/B testing de modelos (champion-challenger)
 
 ---

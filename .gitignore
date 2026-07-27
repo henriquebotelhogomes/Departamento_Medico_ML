@@ -62,3 +62,8 @@ Thumbs.db
 
 # ---- Qoder cache ----
 .qoder/
+
+# ---- MLflow / Training artifacts ----
+mlruns/
+evaluation_results/
+*.egg-info/
