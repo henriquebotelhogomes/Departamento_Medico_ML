@@ -24,8 +24,41 @@ jobs:
         run: uv sync --extra dev
       - name: Lint (ruff)
         run: uv run ruff check app
+      # LFS objects are cached so the model is only downloaded when its OID
+      # changes, keeping monthly LFS bandwidth usage near zero.
+      - name: List LFS assets for cache key
+        run: git lfs ls-files --long | cut -d ' ' -f1 | sort > "$GITHUB_WORKSPACE/.lfs-assets-id"
+      - name: Cache LFS objects
+        uses: actions/cache@v4
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-assets-id') }}
+      # Pulls the model from LFS (or the cache) and copies it into
+      # backend/app/ml/artifacts. Allowed to fail (e.g. LFS quota exhausted):
+      # failure documents the absence instead of silently skipping ML tests.
+      - name: Obtain ML model
+        id: get_model
+        continue-on-error: true
+        run: |
+          git lfs pull
+          # Guard against an un-smudged LFS pointer masquerading as the model.
+          test "$(stat -c%s ../modelo_raiox_mendeley_ft.keras)" -gt 1000000
+          uv run python ../scripts/get_model.py
       - name: Tests
-        run: uv run pytest -q --tb=short
+        env:
+          # With the model present, a missing/broken model turns ML skips into failures.
+          REQUIRE_ML_TESTS: ${{ steps.get_model.outcome == 'success' && '1' || '0' }}
+        run: uv run pytest -q -rs --tb=short
+      - name: ML validation status
+        if: always()
+        run: |
+          if [ "${{ steps.get_model.outcome }}" = "success" ]; then
+            echo "::notice title=ML inference validated::Model present - TestPredictorInference/TestOODDetection ran with REQUIRE_ML_TESTS=1."
+            echo "### :white_check_mark: ML inference validated (model present, ML tests required)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning title=ML inference NOT validated::Model unavailable in CI - ML tests were skipped. A green build does NOT imply ML validation."
+            echo "### :warning: ML inference NOT validated - model unavailable in CI, ML tests skipped" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
   frontend:
     runs-on: ubuntu-latest
@@ -51,8 +84,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [backend, frontend]
     steps:
+      # No LFS here: the Dockerfile does not bundle the model (it is provided
+      # at deploy time), so downloading it would only waste LFS bandwidth.
       - uses: actions/checkout@v4
-        with:
-          lfs: true
       - name: Build production image
         run: docker build -t radioai:ci .
