@@ -6,6 +6,8 @@ _mendeley_raw/
 
 # ---- Large model files (use DVC or Releases for distribution) ----
 *.keras
+# Inference model committed via Git LFS so CI can validate the ML path.
+!modelo_raiox_mendeley_ft.keras
 *.h5
 *.pb
 *.tflite
