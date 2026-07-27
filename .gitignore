@@ -1,0 +1,64 @@
+# ---- Datasets & large local data (kept out of the repo) ----
+Dataset/
+Dataset_mendeley/
+Test/
+_mendeley_raw/
+
+# ---- Large model files (use DVC or Releases for distribution) ----
+*.keras
+*.h5
+*.pb
+*.tflite
+*.onnx
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# ---- uv ----
+# uv.lock IS committed; only the environment is ignored.
+
+# ---- Databases / local storage ----
+*.db
+*.sqlite
+*.sqlite3
+backend/data/
+backend/uploads/
+backend/app/ml/artifacts/*.keras
+
+# ---- Node / frontend ----
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.local
+
+# ---- Env & secrets ----
+.env
+.env.*
+!.env.example
+
+# ---- MkDocs ----
+site/
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+!research/*_log.txt
+
+# ---- Qoder cache ----
+.qoder/

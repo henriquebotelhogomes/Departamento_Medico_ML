@@ -1,0 +1,49 @@
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      # Default to SQLite; switch to the postgres service by enabling the
+      # "postgres" profile and pointing DATABASE_URL at it (see below).
+      DATABASE_URL: ${DATABASE_URL:-sqlite+aiosqlite:///./data/app.db}
+      SECRET_KEY: ${SECRET_KEY:-dev-insecure-change-me-please-32-chars}
+      STORAGE_BACKEND: ${STORAGE_BACKEND:-local}
+      CORS_ORIGINS: "http://localhost:5173"
+      ENVIRONMENT: development
+    volumes:
+      - ./backend:/app
+      - ./examples:/app/examples:ro
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      VITE_API_URL: "http://localhost:8000"
+    volumes:
+      - ./frontend:/web
+      - /web/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+
+  # Optional: `docker compose --profile postgres up` to simulate the Supabase
+  # Postgres in production. Then set DATABASE_URL accordingly.
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["postgres"]
+    environment:
+      POSTGRES_USER: radioai
+      POSTGRES_PASSWORD: radioai
+      POSTGRES_DB: radioai
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

@@ -1,0 +1,9 @@
+{
+  "n_treino": 4065,
+  "n_val": 717,
+  "melhor_val_accuracy": 0.8437935709953308,
+  "test_acc_sem_tta": 0.825,
+  "test_acc_com_tta": 0.8,
+  "baseline_80pct": 0.8,
+  "epocas_treinadas": 34
+}

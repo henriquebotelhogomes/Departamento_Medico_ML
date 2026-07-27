@@ -1,0 +1,11 @@
+# Track large model artifacts with Git LFS
+*.keras filter=lfs diff=lfs merge=lfs -text
+*.h5 filter=lfs diff=lfs merge=lfs -text
+
+# Normalize line endings
+* text=auto eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary

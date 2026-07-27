@@ -1,0 +1,9 @@
+{
+  "baseline_feature_extraction_sem_tta": 0.825,
+  "baseline_feature_extraction_com_tta": 0.8,
+  "ft_melhor_val_accuracy": 0.8521617650985718,
+  "ft_test_acc_sem_tta": 0.875,
+  "ft_test_acc_com_tta": 0.925,
+  "epocas": 5,
+  "camadas_descongeladas": 22
+}

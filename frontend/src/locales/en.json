@@ -1,0 +1,95 @@
+{
+  "brand": "RadioAI",
+  "brand_tagline": "Chest X-ray classification demo",
+
+  "nav": {
+    "predict": "Predict",
+    "history": "History",
+    "dashboard": "Dashboard"
+  },
+
+  "auth": {
+    "sign_in": "Sign in",
+    "signing_in": "Signing in…",
+    "create_account": "Create account",
+    "creating": "Creating…",
+    "username_or_email": "Username or email",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "login_failed": "Login failed",
+    "registration_failed": "Registration failed",
+    "demo_hint": "Try the demo account:",
+    "demo_credentials": "demo123 / demo123",
+    "fill_demo": "Fill demo credentials",
+    "no_account": "No account?",
+    "create_one": "Create one",
+    "already_have_account": "Already have an account?",
+    "logout": "Logout"
+  },
+
+  "predict": {
+    "title": "Predict",
+    "description": "Upload a chest X-ray to classify it into one of four categories.",
+    "drop_zone": "Drag & drop or click to select",
+    "formats": "JPEG, PNG, WEBP, BMP · max 10 MB",
+    "unsupported_type": "Unsupported file type. Use JPEG, PNG, WEBP or BMP.",
+    "analyzing": "Analyzing…",
+    "run_prediction": "Run prediction",
+    "result": "Result",
+    "predicted_class": "Predicted class",
+    "inference_time": "Inference time: {{ms}} ms",
+    "placeholder": "Prediction results will appear here.",
+    "prediction_failed": "Prediction failed",
+    "ood_title": "Out of Distribution",
+    "ood_subtitle": "This image does not appear to be a chest X-ray.",
+    "ood_explanation": "The model's confidence in its prediction is unreliable for images outside its training distribution (chest X-rays). Please upload a valid chest X-ray image for an accurate diagnosis.",
+    "ood_similarity": "Similarity score: {{value}}% (threshold: 45%)",
+    "gradcam_title": "Model attention (Grad-CAM)",
+    "gradcam_original": "Original",
+    "gradcam_heatmap": "Heatmap",
+    "gradcam_explanation": "Red/warm regions indicate areas the model focused on for this prediction."
+  },
+
+  "history": {
+    "title": "History",
+    "all_classes": "All classes",
+    "col_file": "File",
+    "col_class": "Class",
+    "col_confidence": "Confidence",
+    "col_date": "Date",
+    "loading": "Loading…",
+    "empty": "No predictions yet.",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm_delete": "Confirm delete",
+    "delete_question": "Are you sure you want to delete this prediction?",
+    "delete_aria": "Delete prediction",
+    "total": "{{count}} total",
+    "page_info": "Page {{page}} / {{totalPages}}",
+    "close": "Close"
+  },
+
+  "dashboard": {
+    "title": "Dashboard",
+    "loading": "Loading dashboard…",
+    "total_predictions": "Total predictions",
+    "avg_confidence": "Average confidence",
+    "most_frequent": "Most frequent class",
+    "chart_by_class": "Predictions by class",
+    "chart_over_time": "Predictions over time"
+  },
+
+  "common": {
+    "toggle_theme": "Toggle theme",
+    "confidence": "{{pct}}% confidence",
+    "probability_aria": "{{label}} probability"
+  },
+
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "pt-BR": "Português"
+  }
+}

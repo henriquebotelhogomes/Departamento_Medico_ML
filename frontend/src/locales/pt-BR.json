@@ -1,0 +1,95 @@
+{
+  "brand": "RadioAI",
+  "brand_tagline": "Demo de classificação de raio-X torácico",
+
+  "nav": {
+    "predict": "Predição",
+    "history": "Histórico",
+    "dashboard": "Painel"
+  },
+
+  "auth": {
+    "sign_in": "Entrar",
+    "signing_in": "Entrando…",
+    "create_account": "Criar conta",
+    "creating": "Criando…",
+    "username_or_email": "Usuário ou e-mail",
+    "username": "Usuário",
+    "email": "E-mail",
+    "password": "Senha",
+    "login_failed": "Falha no login",
+    "registration_failed": "Falha no cadastro",
+    "demo_hint": "Experimente a conta demo:",
+    "demo_credentials": "demo123 / demo123",
+    "fill_demo": "Preencher credenciais demo",
+    "no_account": "Não tem conta?",
+    "create_one": "Crie uma",
+    "already_have_account": "Já tem uma conta?",
+    "logout": "Sair"
+  },
+
+  "predict": {
+    "title": "Predição",
+    "description": "Envie um raio-X torácico para classificá-lo em uma das quatro categorias.",
+    "drop_zone": "Arraste e solte ou clique para selecionar",
+    "formats": "JPEG, PNG, WEBP, BMP · máx. 10 MB",
+    "unsupported_type": "Tipo de arquivo não suportado. Use JPEG, PNG, WEBP ou BMP.",
+    "analyzing": "Analisando…",
+    "run_prediction": "Executar predição",
+    "result": "Resultado",
+    "predicted_class": "Classe prevista",
+    "inference_time": "Tempo de inferência: {{ms}} ms",
+    "placeholder": "Os resultados da predição aparecerão aqui.",
+    "prediction_failed": "Falha na predição",
+    "ood_title": "Fora da Distribuição",
+    "ood_subtitle": "Esta imagem não parece ser um raio-X torácico.",
+    "ood_explanation": "A confiança do modelo na predição não é confiável para imagens fora da sua distribuição de treino (raios-X torácicos). Por favor, envie uma imagem válida de raio-X torácico para um diagnóstico preciso.",
+    "ood_similarity": "Pontuação de similaridade: {{value}}% (limiar: 45%)",
+    "gradcam_title": "Atenção do modelo (Grad-CAM)",
+    "gradcam_original": "Original",
+    "gradcam_heatmap": "Mapa de calor",
+    "gradcam_explanation": "Regiões vermelhas/quentes indicam áreas em que o modelo focou para esta predição."
+  },
+
+  "history": {
+    "title": "Histórico",
+    "all_classes": "Todas as classes",
+    "col_file": "Arquivo",
+    "col_class": "Classe",
+    "col_confidence": "Confiança",
+    "col_date": "Data",
+    "loading": "Carregando…",
+    "empty": "Nenhuma predição ainda.",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "confirm_delete": "Confirmar exclusão",
+    "delete_question": "Tem certeza que deseja excluir esta predição?",
+    "delete_aria": "Excluir predição",
+    "total": "{{count}} total",
+    "page_info": "Página {{page}} / {{totalPages}}",
+    "close": "Fechar"
+  },
+
+  "dashboard": {
+    "title": "Painel",
+    "loading": "Carregando painel…",
+    "total_predictions": "Total de predições",
+    "avg_confidence": "Confiança média",
+    "most_frequent": "Classe mais frequente",
+    "chart_by_class": "Predições por classe",
+    "chart_over_time": "Predições ao longo do tempo"
+  },
+
+  "common": {
+    "toggle_theme": "Alternar tema",
+    "confidence": "{{pct}}% de confiança",
+    "probability_aria": "probabilidade de {{label}}"
+  },
+
+  "language": {
+    "label": "Idioma",
+    "en": "English",
+    "pt-BR": "Português"
+  }
+}
