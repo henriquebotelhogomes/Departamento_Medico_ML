@@ -63,6 +63,9 @@ Thumbs.db
 # ---- Qoder cache ----
 .qoder/
 
+# ---- PRD (internal planning) ----
+PRD-V1.md
+
 # ---- MLflow / Training artifacts ----
 mlruns/
 evaluation_results/
