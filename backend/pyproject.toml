@@ -29,6 +29,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Worker assíncrono + cache de predições (não instalado por padrão).
+# Instale com: uv sync --extra worker  (ou: pip install -e ".[worker]")
+worker = [
+    "celery[redis]>=5.4",
+    "redis>=5.2",
+]
 dev = [
     "pytest>=8.3",
     "pytest-asyncio>=0.24",

@@ -34,8 +34,9 @@ RUN uv sync --frozen --no-dev
 # Bundle the built SPA so FastAPI can serve it at "/"
 COPY --from=frontend /web/dist ./app/static
 
-# Model artifact is expected at build/deploy time (Git LFS or scripts/get_model.py).
-# It is mounted or COPYed separately to keep the image lean; see docs/deploy.md.
+# Inference model (tracked via Git LFS at the repo root; resolved to real bytes
+# by the host on checkout — HF Spaces / Render / CI all pull LFS before build).
+COPY modelo_raiox_mendeley_ft.keras ./app/ml/artifacts/model.keras
 
 EXPOSE 8000
 # Render/HF provide $PORT; default to 8000 locally.
