@@ -1,0 +1,60 @@
+﻿name: 🐛 Relato de Bug
+description: Reporte um problema inesperado ou falha no sistema RadioAI
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por ajudar a aprimorar o RadioAI! Por favor, preencha o formulário abaixo o mais detalhadamente possível.
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do Problema
+      description: Explique o que aconteceu de forma clara e concisa.
+      placeholder: "Ex: Ao enviar uma imagem JPEG de raio-X, a resposta retorna erro 500 no endpoint /predict..."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Passos para Reprodução
+      description: Como reproduzir o problema passo a passo.
+      placeholder: |
+        1. Iniciar os containers com `docker compose up`
+        2. Acessar http://localhost:8000
+        3. Realizar login e fazer upload da imagem X...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento Esperado
+      description: O que você esperava que acontecesse?
+      placeholder: "A predição deveria retornar a classe clínica e o mapa Grad-CAM."
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs ou Mensagens de Erro
+      description: Cole aqui os logs relevantes do backend/frontend ou traceback do Python.
+      render: shell
+  - type: dropdown
+    id: component
+    attributes:
+      label: Componente Afetado
+      options:
+        - Frontend (React / Vite)
+        - Backend (FastAPI / Celery)
+        - Modelo ML / Inferência (TensorFlow / Grad-CAM / OOD)
+        - Docker / Infraestrutura
+        - Documentação / CI/CD
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Ambiente
+      description: Sistema operacional, versão do Python/Node e navegador.
+      placeholder: "Ex: Windows 11, Python 3.12, Chrome 128, Docker Desktop 4.30"

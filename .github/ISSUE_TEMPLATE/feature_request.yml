@@ -1,0 +1,40 @@
+﻿name: 💡 Sugestão de Melhoria / Nova Feature
+description: Sugira uma nova funcionalidade, melhoria no modelo de ML ou na interface
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tem uma ideia para melhorar o RadioAI? Adoraríamos ouvir suas sugestões!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Contexto ou Problema Relacionado
+      description: Há um problema ou limitação atual que motivou essa sugestão?
+      placeholder: "Ex: Atualmente é necessário aguardar a inferência síncrona para lotes grandes de imagens..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solução Proposta
+      description: Descreva como você gostaria que a funcionalidade operasse.
+      placeholder: "Implementar um endpoint batch assíncrono com webhook ou notificação..."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas Consideradas
+      description: Alguma solução paliativa ou alternativa foi avaliada?
+  - type: dropdown
+    id: category
+    attributes:
+      label: Categoria
+      options:
+        - Machine Learning / Modelos
+        - API / Backend
+        - UI / UX Frontend
+        - MLOps / Monitoramento / Drift
+        - Documentação

@@ -1,0 +1,8 @@
+﻿blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/henriquebotelhogomes/Departamento_Medico_ML/discussions
+    about: Faça perguntas, compartilhe ideias ou tire dúvidas gerais com a comunidade.
+  - name: 🔒 Reportar Vulnerabilidade de Segurança
+    url: https://github.com/henriquebotelhogomes/Departamento_Medico_ML/security/advisories/new
+    about: Para reportar falhas de segurança de maneira privada e responsável.

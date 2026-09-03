@@ -2,13 +2,14 @@
 
 > Sistema full-stack de classificação médica com **explainability**, **detecção de anomalias**, **monitoramento de drift** e **pipeline MLOps reproduzível**.
 
-![Python](https://img.shields.io/badge/python-3.12-blue)
-![TensorFlow](https://img.shields.io/badge/tensorflow-2.21-orange)
-![React](https://img.shields.io/badge/react-18-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)
-![Docker](https://img.shields.io/badge/docker-compose-2496ED)
-![CI](https://img.shields.io/badge/CI-GitHub_Actions-222)
-![License](https://img.shields.io/badge/license-MIT-green)
+[![GitHub Release](https://img.shields.io/github/v/release/henriquebotelhogomes/Departamento_Medico_ML?color=blue&label=release)](https://github.com/henriquebotelhogomes/Departamento_Medico_ML/releases)
+[![Packages](https://img.shields.io/badge/ghcr.io-radioai-2496ED?logo=docker&logoColor=white)](https://github.com/henriquebotelhogomes/Departamento_Medico_ML/pkgs/container/radioai)
+[![CI](https://github.com/henriquebotelhogomes/Departamento_Medico_ML/actions/workflows/ci.yml/badge.svg)](https://github.com/henriquebotelhogomes/Departamento_Medico_ML/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Discussions](https://img.shields.io/badge/Discussions-Join-success?logo=github)](https://github.com/henriquebotelhogomes/Departamento_Medico_ML/discussions)
 
 ***
 
