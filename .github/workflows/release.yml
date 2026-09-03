@@ -1,4 +1,4 @@
-﻿name: Release
+name: Release
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
           fi
 
       - name: Generate Release Notes & Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.tag.outputs.version }}
           name: RadioAI ${{ steps.tag.outputs.version }}
