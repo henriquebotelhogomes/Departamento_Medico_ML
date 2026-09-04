@@ -21,6 +21,7 @@ import numpy as np
 from PIL import Image
 
 from app.core.logging import get_logger
+from app.ml.dicom_handler import extract_and_deidentify_dicom, is_dicom_bytes
 from app.ml.labels import NUM_CLASSES, OOD_CLASS_ID, label_for
 
 logger = get_logger(__name__)
@@ -125,10 +126,7 @@ class Predictor:
 
         # Collect reference image files
         extensions = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
-        ref_files = [
-            f for f in self.ood_reference_dir.iterdir()
-            if f.suffix.lower() in extensions
-        ]
+        ref_files = [f for f in self.ood_reference_dir.iterdir() if f.suffix.lower() in extensions]
         if not ref_files:
             logger.warning("ood_no_reference_images")
             return
@@ -141,7 +139,7 @@ class Predictor:
         for fpath in ref_files:
             try:
                 img_bytes = fpath.read_bytes()
-                batch = self._preprocess(img_bytes)
+                batch, _, _ = self._preprocess(img_bytes)
                 conv_out = conv_layer(batch)
                 emb = gap_layer(conv_out).numpy()[0]  # (2048,)
                 embeddings.append(emb)
@@ -183,18 +181,37 @@ class Predictor:
         return self._model is not None
 
     # -- inference ---------------------------------------------------------
-    def _preprocess(self, image_bytes: bytes) -> np.ndarray:
-        img = Image.open(io.BytesIO(image_bytes)).convert("RGB").resize(IMG_SIZE)
-        arr = np.asarray(img, dtype="float32")
-        return np.expand_dims(arr, axis=0)  # (1, 256, 256, 3)
+    def _preprocess(self, image_bytes: bytes) -> tuple[np.ndarray, dict | None, str]:
+        """Preprocess raw bytes (DICOM or standard image) to (1, 256, 256, 3) float32 batch,
+        dicom_metadata (if applicable), and raw normalized image base64 data URI.
+        """
+        if is_dicom_bytes(image_bytes):
+            pil_img, dicom_meta = extract_and_deidentify_dicom(image_bytes)
+            resized = pil_img.resize(IMG_SIZE)
+        else:
+            pil_img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+            resized = pil_img.resize(IMG_SIZE)
+            dicom_meta = None
+
+        arr = np.asarray(resized, dtype="float32")
+        batch = np.expand_dims(arr, axis=0)
+
+        # Base64 of preprocessed image for browser display (crucial for DICOM)
+        buf = io.BytesIO()
+        resized.save(buf, format="PNG")
+        raw_b64 = "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("utf-8")
+
+        return batch, dicom_meta, raw_b64
 
     def predict(self, image_bytes: bytes) -> dict:
-        """Run inference and return class, label, confidence, probs, OOD flag and latency."""
+        """Run inference: returns class, label, confidence, probs, OOD flag, DICOM meta,
+        and latency.
+        """
         if self._model is None:
             self.load()
 
         start = time.perf_counter()
-        batch = self._preprocess(image_bytes)
+        batch, dicom_meta, raw_b64 = self._preprocess(image_bytes)
         probs = self._model.predict(batch, verbose=0)[0]
 
         if self.enable_tta:
@@ -220,7 +237,9 @@ class Predictor:
             final_confidence = float(probs[class_id])
 
         # Generate Grad-CAM heatmap (only if in-distribution)
-        gradcam_b64 = self._generate_gradcam(batch, class_id) if not is_ood else None
+        gradcam_b64, pure_heatmap_b64 = (
+            self._generate_gradcam(batch, class_id) if not is_ood else (None, None)
+        )
 
         return {
             "predicted_class": final_class_id,
@@ -229,20 +248,19 @@ class Predictor:
             "probs": {i: float(probs[i]) for i in range(NUM_CLASSES)},
             "inference_ms": round(elapsed_ms, 2),
             "gradcam_image": gradcam_b64,
+            "raw_image_data": raw_b64,
+            "pure_heatmap": pure_heatmap_b64,
+            "dicom_metadata": dicom_meta,
             "is_ood": is_ood,
             "ood_similarity": round(similarity, 4),
         }
 
-    def _generate_gradcam(
-        self, batch: np.ndarray, class_id: int
-    ) -> str | None:
-        """Generate Grad-CAM heatmap overlaid on the input image as base64 PNG.
-
-        Uses tf.GradientTape to compute gradients of the predicted class score
-        w.r.t. the last convolutional feature map (resnet50 output).
+    def _generate_gradcam(self, batch: np.ndarray, class_id: int) -> tuple[str | None, str | None]:
+        """Generate Grad-CAM heatmap overlaid on the input image, as well as a standalone
+        transparent heatmap PNG for dynamic frontend opacity blending.
         """
         if self._conv_layer_idx is None:
-            return None
+            return None, None
         try:
             import tensorflow as tf
 
@@ -268,37 +286,48 @@ class Predictor:
             # Global average pooling of gradients → importance weights
             weights = tf.reduce_mean(grads, axis=(1, 2))  # (1, filters)
             # Weighted combination of feature maps
-            cam = tf.reduce_sum(
-                conv_output * weights[:, tf.newaxis, tf.newaxis, :], axis=-1
-            )[0]  # (H, W)
+            cam = tf.reduce_sum(conv_output * weights[:, tf.newaxis, tf.newaxis, :], axis=-1)[
+                0
+            ]  # (H, W)
             # ReLU + normalize
             cam = tf.nn.relu(cam).numpy()
             if cam.max() > 0:
                 cam = cam / cam.max()
 
             # Resize heatmap to original image size
-            heatmap = Image.fromarray((cam * 255).astype(np.uint8)).resize(
-                IMG_SIZE, Image.BILINEAR
-            )
+            heatmap = Image.fromarray((cam * 255).astype(np.uint8)).resize(IMG_SIZE, Image.BILINEAR)
             heatmap_arr = np.asarray(heatmap)
 
             # Apply jet colormap
             jet = _get_jet_colormap()
             colored_heatmap = jet[heatmap_arr]  # (256, 256, 3)
 
-            # Overlay on original image
+            # Generate pure heatmap with alpha channel based on activation
+            pure_rgba = np.zeros((IMG_SIZE[1], IMG_SIZE[0], 4), dtype=np.uint8)
+            pure_rgba[:, :, :3] = colored_heatmap
+            pure_rgba[:, :, 3] = heatmap_arr
+
+            pure_buf = io.BytesIO()
+            Image.fromarray(pure_rgba).save(pure_buf, format="PNG")
+            pure_b64 = "data:image/png;base64," + base64.b64encode(pure_buf.getvalue()).decode(
+                "utf-8"
+            )
+
+            # Standard overlay on original image (60% original + 40% heatmap)
             original = batch[0].astype(np.uint8)
             overlay = (0.6 * original + 0.4 * colored_heatmap).astype(np.uint8)
 
-            # Encode to base64 PNG
             img_out = Image.fromarray(overlay)
             buffer = io.BytesIO()
             img_out.save(buffer, format="PNG")
-            b64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-            return f"data:image/png;base64,{b64}"
+            overlay_b64 = "data:image/png;base64," + base64.b64encode(buffer.getvalue()).decode(
+                "utf-8"
+            )
+
+            return overlay_b64, pure_b64
         except Exception as exc:  # noqa: BLE001
             logger.warning("gradcam_failed", error=str(exc))
-            return None
+            return None, None
 
 
 _predictor: Predictor | None = None

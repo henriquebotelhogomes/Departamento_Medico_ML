@@ -3,7 +3,8 @@
   "brand_tagline": "Demo de classificação de raio-X torácico",
 
   "nav": {
-    "predict": "Predição",
+    "new_exam": "Novo Exame",
+    "predict": "Estação PACS / Demos",
     "history": "Histórico",
     "dashboard": "Painel"
   },

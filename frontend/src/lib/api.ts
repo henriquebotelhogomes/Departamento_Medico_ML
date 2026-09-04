@@ -7,6 +7,8 @@ import type {
   PredictionListOut,
   PredictionOut,
   PredictionResult,
+  ReportRequest,
+  ReportResponse,
   StatsOut,
   TokenPair,
   User,
@@ -87,9 +89,18 @@ api.interceptors.response.use(
 
 export function apiError(error: unknown, fallback = "Something went wrong"): string {
   if (axios.isAxiosError(error)) {
+    if (error.response?.status === 429) {
+      return (
+        error.response?.data?.detail ||
+        error.response?.data?.error ||
+        "Muitas requisições em pouco tempo. Por favor, aguarde alguns segundos antes de tentar novamente."
+      );
+    }
     const detail = error.response?.data?.detail;
     if (typeof detail === "string") return detail;
     if (Array.isArray(detail) && detail[0]?.msg) return detail[0].msg;
+    const err = error.response?.data?.error;
+    if (typeof err === "string") return err;
     return error.message || fallback;
   }
   return fallback;
@@ -126,6 +137,8 @@ export async function predict(file: File): Promise<PredictionResult> {
   return data;
 }
 
+export const predictImage = predict;
+
 export interface HistoryParams {
   page?: number;
   page_size?: number;
@@ -150,5 +163,10 @@ export async function deletePrediction(id: number): Promise<void> {
 
 export async function fetchStats(): Promise<StatsOut> {
   const { data } = await api.get<StatsOut>("/stats");
+  return data;
+}
+
+export async function generateReport(payload: ReportRequest): Promise<ReportResponse> {
+  const { data } = await api.post<ReportResponse>("/predictions/report", payload);
   return data;
 }

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
@@ -16,40 +16,26 @@ function createWrapper() {
   );
 }
 
-describe("Predict page", () => {
+describe("Predict (PACS Demo) page", () => {
   it("renders the page title", () => {
     render(<Predict />, { wrapper: createWrapper() });
     expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
   });
 
-  it("renders the upload drop zone", () => {
+  it("renders the 1-Click Demo sample buttons", () => {
     render(<Predict />, { wrapper: createWrapper() });
-    // In pt-BR: "Arraste e solte" or en: "Drag & drop"
-    const dropText = screen.getByText(/arraste|drag/i);
-    expect(dropText).toBeInTheDocument();
+    expect(screen.getByText("Normal")).toBeInTheDocument();
+    expect(screen.getByText("Covid-19")).toBeInTheDocument();
+    expect(screen.getByText("Exame DICOM (.dcm)")).toBeInTheDocument();
   });
 
-  it("run prediction button is disabled without file", () => {
+  it("shows placeholder text when no result is loaded", () => {
     render(<Predict />, { wrapper: createWrapper() });
-    const btn = screen.getByRole("button", { name: /execut|run/i });
-    expect(btn).toBeDisabled();
+    expect(screen.getByRole("heading", { name: /estação de demonstração pacs/i })).toBeInTheDocument();
   });
 
-  it("shows error for unsupported file type", async () => {
-    const { container } = render(<Predict />, { wrapper: createWrapper() });
-
-    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-    const file = new File(["test"], "test.txt", { type: "text/plain" });
-
-    fireEvent.change(input, { target: { files: [file] } });
-
-    // In pt-BR: "Tipo de arquivo não suportado" or en: "Unsupported file type"
-    expect(screen.getByText(/tipo de arquivo|unsupported/i)).toBeInTheDocument();
-  });
-
-  it("shows placeholder text when no result", () => {
+  it("offers direct link to New Exam page", () => {
     render(<Predict />, { wrapper: createWrapper() });
-    // In pt-BR: "resultados da predição" or en: "Prediction results"
-    expect(screen.getByText(/resultados|prediction results/i)).toBeInTheDocument();
+    expect(screen.getByText(/ir para novo exame/i)).toBeInTheDocument();
   });
 });

@@ -3,7 +3,8 @@
   "brand_tagline": "Chest X-ray classification demo",
 
   "nav": {
-    "predict": "Predict",
+    "new_exam": "New Exam",
+    "predict": "PACS Station / Demos",
     "history": "History",
     "dashboard": "Dashboard"
   },

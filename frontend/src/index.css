@@ -34,3 +34,55 @@
     @apply mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300;
   }
 }
+
+/* ==========================================================================
+   ESTILOS DE IMPRESSÃO HOSPITALAR A4 (PDF / PRINT)
+   ========================================================================== */
+.print-only {
+  display: none !important;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 1.5cm 1.5cm 1.5cm 1.5cm;
+  }
+
+  /* Ocultar navegações, botões, controles interativos e elementos de tela */
+  header,
+  nav,
+  button,
+  select,
+  input,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Exibir exclusivamente o laudo formal formatado */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Resetar cores e fundos para papel branco */
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 10pt !important;
+    line-height: 1.5 !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Evitar quebras de página no meio de seções */
+  .print-page-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}

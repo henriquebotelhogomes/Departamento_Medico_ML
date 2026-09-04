@@ -48,9 +48,7 @@ CurrentUser = Annotated[User, Depends(get_current_user)]
 
 async def get_user_by_identifier(db: AsyncSession, identifier: str) -> User | None:
     """Look up a user by username or email (used at login)."""
-    stmt = select(User).where(
-        (User.username == identifier) | (User.email == identifier.lower())
-    )
+    stmt = select(User).where((User.username == identifier) | (User.email == identifier.lower()))
     result = await db.execute(stmt)
     return result.scalar_one_or_none()
 

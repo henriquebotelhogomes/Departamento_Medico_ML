@@ -172,76 +172,99 @@ graph TB
 
 ### Inteligência Artificial & MLOps
 
-* **Grad-CAM (Explainability)** — Visualização de atenção do modelo via `tf.GradientTape`, mostrando *onde* o modelo focou para cada predição
+* **Grad-CAM (Explainability)** — Visualização de atenção do modelo via `tf.GradientTape`, mostrando *onde* o modelo focou para cada predição.
 
-* **Detecção Out-of-Distribution (OOD)** — Rejeita automaticamente imagens que não são raio-X torácico usando similaridade cosseno no espaço de embeddings (2048-dim)
+* **Detecção Out-of-Distribution (OOD)** — Rejeita automaticamente imagens que não são raio-X torácico usando similaridade cosseno no espaço de embeddings (2048-dim).
 
-* **Pipeline de treino reproduzível** — Script configurável via YAML com seeds fixas, class weights balanceados, two-phase training (freeze → fine-tune), e tracking completo via MLflow
+* **Compatibilidade Hospitalar DICOM (.dcm)** — Ingestão nativa de exames DICOM hospitalares com rotina de desidentificação de dados sensíveis do paciente (PS 3.15, em conformidade com HIPAA e LGPD) e extração de metadados técnicos (kVp, incidência PA/AP, modalidade CR/DX).
 
-* **Validação estatística do threshold OOD** — ROC/AUC + Youden's J para definir threshold ótimo com evidência empírica
+* **Consenso Diagnóstico & Laudos Multi-LLM** — Geração de laudos radiológicos estruturados (Técnica, Achados, Impressão, CID-10 e Recomendações) através de múltiplos modelos de fronteira:
+  * **Google Gemini 3.8 / 2.5 Flash** (via Google AI Studio)
+  * **GPT 5.6 Luna** (via OpenCode Zen `/responses`)
+  * **DeepSeek V4 Flash** (via OpenCode Zen `/chat/completions`)
+  * **Qwen 3.7 Plus** (via OpenCode Zen `/messages`)
+  * **Motor Clínico Determinístico Local** (100% offline, sem consumo de API)
+  * **Matriz Comparativa Lado a Lado (*Side-by-Side*)**: painel de consenso que confronta simultaneamente as impressões e condutas sugeridas pelas diferentes IAs.
 
-* **Model Card** — Documentação completa seguindo padrões da indústria (bias, limitações, considerações éticas, métricas por classe)
+* **Supervisão Médica & Human-in-the-Loop (HITL)** — Detecção proativa de empates técnicos e margens estreitas ($\Delta < 15\%$, como no dilema 51% Bacteriana vs 49% Viral), acionando alerta de ambiguidade etiológica e painel de intervenção soberana para o médico assistente sobrescrever a conduta, registrar justificativa com biomarcadores (Procalcitonina / PCR) e regerar o laudo formal.
 
-* **Script de avaliação** — Gera confusion matrix, ROC curves (one-vs-rest), classification report e summary JSON automaticamente
+* **Pipeline de treino reproduzível** — Script configurável via YAML com seeds fixas, class weights balanceados, two-phase training (freeze → fine-tune), e tracking completo via MLflow.
+
+* **Validação estatística do threshold OOD** — ROC/AUC + Youden's J para definir threshold ótimo com evidência empírica.
+
+* **Model Card** — Documentação completa seguindo padrões da indústria (bias, limitações, considerações éticas, métricas por classe).
+
+* **Script de avaliação** — Gera confusion matrix, ROC curves (one-vs-rest), classification report e summary JSON automaticamente.
 
 ### Monitoramento & Observabilidade
 
-* **Drift monitoring** — Detecção de concept drift e data drift via testes estatísticos (Chi-squared para distribuição de classes, Kolmogorov-Smirnov para confiança)
+* **Drift monitoring** — Detecção de concept drift e data drift via testes estatísticos (Chi-squared para distribuição de classes, Kolmogorov-Smirnov para confiança).
 
-* **Logging estruturado** — JSON logs com `structlog`, correlation ID por request, contexto enriquecido
+* **Logging estruturado** — JSON logs com `structlog`, correlation ID por request, contexto enriquecido.
 
-* **Health check** — Endpoint `/api/health` verifica DB + modelo carregado
+* **Health check** — Endpoint `/api/health` verifica DB + modelo carregado.
 
-* **Request logging** — Método, path, status, duração em ms para cada request
+* **Request logging** — Método, path, status, duração em ms para cada request.
 
 ### Segurança & Robustez
 
-* **Rate limiting** — 10 predições/minuto por IP (slowapi) para proteger contra abuso
+* **Rate limiting** — 10 predições/minuto por IP (slowapi) para proteger contra abuso.
 
-* **Security headers** — X-Content-Type-Options, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy
+* **Security headers** — X-Content-Type-Options, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy.
 
-* **CORS restritivo** — Apenas métodos e headers específicos permitidos
+* **CORS restritivo** — Apenas métodos e headers específicos permitidos.
 
-* **JWT com refresh tokens** — Autenticação stateless com rotação de tokens
+* **JWT com refresh tokens** — Autenticação stateless com rotação de tokens.
 
 ### Arquitetura & Escalabilidade
 
-* **Celery + Redis** *(opcional — extra `worker`)* — Worker assíncrono para inferência pesada, desacoplando do ciclo de request. Não instalado por padrão; requer `uv sync --extra worker` (ou `pip install -e ".[worker]"`) e uma instância Redis em execução
+* **Google Cloud Run (Scale-to-Zero - $0/mês)** — Deploy conteinerizado serverless com política de escala a zero instâncias, garantindo custo fixo de $0/mês para ambientes de portfólio.
 
-* **Cache de predições** *(opcional — extra `worker`)* — SHA-256 hash → Redis com TTL, evitando re-inferência de imagens duplicadas. Degrada silenciosamente quando o Redis não está disponível — a API funciona normalmente sem ele
+* **Celery + Redis** *(opcional — extra `worker`)* — Worker assíncrono para inferência pesada, desacoplando do ciclo de request. Não instalado por padrão; requer `uv sync --extra worker` (ou `pip install -e ".[worker]"`) e uma instância Redis em execução.
 
-* **Docker multi-stage** — Imagem otimizada combinando frontend build + backend em container único
+* **Cache de predições** *(opcional — extra `worker`)* — SHA-256 hash → Redis com TTL, evitando re-inferência de imagens duplicadas. Degrada silenciosamente quando o Redis não está disponível.
 
-* **PostgreSQL + Alembic** — Migrations versionadas, connection pooling assíncrono
+* **Docker multi-stage** — Imagem otimizada combinando frontend build + backend em container único.
 
-* **Storage abstrato** — Interface que suporta local (dev) e Supabase (prod) sem mudança de código
+* **PostgreSQL + Alembic** — Migrations versionadas, connection pooling assíncrono.
 
-### Frontend & UX
+* **Storage abstrato** — Interface que suporta local (dev) e Supabase (prod) sem mudança de código.
 
-* **Internacionalização (i18n)** — Suporte completo pt-BR/English com `react-i18next`, detecção automática do idioma do navegador
+### Frontend & Experiência PACS
 
-* **Grad-CAM visual** — Comparação lado-a-lado (original vs. heatmap) para interpretabilidade
+* **Estação PACS Clínica Interativa** — Visualizador médico profissional com controles de Zoom (50%-300%), Brilho (50%-200%), Contraste (50%-250%), Inversão Monocromática, Slider de Mapa de Calor Grad-CAM (0%-100%), Modo Tela Cheia e movimentação tátil (*pan & drag*).
 
-* **Alerta OOD** — Card visual quando imagem não é raio-X, explicando por quê
+* **Galeria 1-Click Demo** — Acesso imediato a 6 casos clínicos prontos (Normal, Covid-19, Pneumonia Bacteriana, Pneumonia Viral, Anomalia OOD e Exame DICOM hospitalar) para demonstração instantânea.
 
-* **Dark mode** — Com detecção de preferência do sistema
+* **Motor de Impressão Hospitalar A4 Timbrada** — Emissão de laudo médico formatado para impressão ou exportação em PDF via `@media print`, gerando folha de 1 página A4 limpa com identificação clínica, seções médicas estruturadas, campo para carimbo/assinatura (CRM/RQE) e aviso legal regulatório.
 
-* **Confirmação de exclusão** — UX defensiva com two-step delete
+* **Internacionalização (i18n)** — Suporte completo pt-BR/English com `react-i18next`, detecção automática do idioma do navegador.
+
+* **Dark & Light Mode Clínico** — Contraste perfeitamente calibrado para salas escuras de radiologia e visualização em ambientes iluminados.
+
+* **Confirmação de exclusão** — UX defensiva com two-step delete no histórico.
 
 ***
 
 ## Funcionalidades
 
-| Feature              | Descrição                                                          |
-| -------------------- | ------------------------------------------------------------------ |
-| Predição drag & drop | Upload com barras de probabilidade em tempo real                   |
-| Histórico paginado   | Filtro por classe, modal de detalhes, exclusão com confirmação     |
-| Dashboard analítico  | Gráficos de barras/linha (predições por classe, ao longo do tempo) |
-| Autenticação JWT     | Register/login/refresh com conta demo one-click                    |
-| Explainability       | Grad-CAM heatmap para cada predição                                |
-| OOD Detection        | Rejeição automática de não raio-X                                  |
-| Drift Monitoring     | Detecção estatística de mudanças na distribuição                   |
-| i18n                 | Interface completa em português e inglês                           |
+| Feature                  | Descrição                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| **Estação PACS**         | Visualizador médico interativo com Zoom, Brilho, Contraste, Inversão e Grad-CAM|
+| **1-Click Demo**         | Galeria com 6 radiografias e exames DICOM para teste diagnóstico instantâneo   |
+| **Suporte DICOM (.dcm)** | Processamento hospitalar, desidentificação PS 3.15 (HIPAA/LGPD) e metadados    |
+| **Laudos Multi-LLM**     | Laudos estruturados via Gemini 3.8, GPT 5.6, DeepSeek V4, Qwen 3.7 e Motor Local |
+| **Consenso Lado a Lado** | Painel comparativo de impressões clínicas e CIDs entre múltiplas IAs           |
+| **Human-in-the-Loop**    | Alerta de ambiguidade etiológica e sobrescrita soberana pelo médico radiologista|
+| **Impressão Médica A4**  | Laudo hospitalar timbrado para impressão/PDF com campo de assinatura e CRM     |
+| **Predição Drag & Drop** | Upload convencional com barras de probabilidade calibrada em tempo real        |
+| **Histórico Paginado**   | Filtro por classe, modal de detalhes e exclusão segura                         |
+| **Dashboard Analítico**  | Gráficos de volume, confiança média e distribuição temporal das predições      |
+| **Autenticação JWT**     | Register/login/refresh com conta demo one-click                                |
+| **Explainability**       | Mapas Grad-CAM destacando regiões pulmonares determinantes                     |
+| **OOD Detection**        | Rejeição automática de imagens não torácicas via similaridade de embeddings    |
+| **Drift Monitoring**     | Detecção estatística de data drift e concept drift                             |
+| **Internacionalização**  | Interface completa bilíngue (Português e Inglês)                               |
 
 ***
 
@@ -321,31 +344,33 @@ docker compose up --build
 
 ## Tech Stack
 
-| Camada        | Tecnologias                                                            |
-| ------------- | ---------------------------------------------------------------------- |
-| **ML/AI**     | TensorFlow 2.21 · Keras 3.15 · ResNet50 · Grad-CAM · OOD Detection     |
-| **MLOps**     | MLflow · Reproducible Training · Model Card · Drift Monitoring         |
-| **Backend**   | Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy 2 (async) · Celery (opcional) |
-| **Frontend**  | React 18 · Vite · TypeScript · Tailwind CSS · TanStack Query · i18next |
-| **Database**  | SQLite (dev) / PostgreSQL (prod) · Alembic migrations · Redis cache (opcional) |
-| **Segurança** | JWT + Refresh Tokens · Rate Limiting · Security Headers · CORS         |
-| **DevOps**    | Docker multi-stage · docker-compose · GitHub Actions CI · Render       |
-| **Qualidade** | ruff · pytest (31 tests) · Vitest (14 tests) · pre-commit hooks        |
+| Camada            | Tecnologias                                                                    |
+| ----------------- | ------------------------------------------------------------------------------ |
+| **ML & Visão**    | TensorFlow 2.21 · Keras 3.15 · ResNet50 · Grad-CAM · OOD Detection (Embeddings) |
+| **Padrão Hospitalar** | Pydicom · Padrão DICOM PS 3.15 (Desidentificação HIPAA/LGPD) · Estação PACS  |
+| **GenAI & Laudos**| Google Gemini 3.8 Flash · GPT 5.6 Luna · DeepSeek V4 · Qwen 3.7 · Motor Local  |
+| **MLOps**         | MLflow · Treinamento Reproduzível · Model Card · Monitoramento de Data Drift   |
+| **Backend**       | Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy 2 (async) · Celery (opcional) |
+| **Frontend**      | React 18 · Vite · TypeScript · Tailwind CSS · TanStack Query · Lucide · i18next|
+| **Database**      | SQLite (dev) / PostgreSQL (prod) · Alembic migrations · Redis cache (opcional) |
+| **Segurança**     | JWT + Refresh Tokens · Rate Limiting · Security Headers · CORS Restritivo      |
+| **DevOps & Cloud**| Google Cloud Run (Scale-to-Zero $0/mês) · Docker multi-stage · GitHub Actions CI|
+| **Qualidade**     | ruff · pytest (36 testes) · Vitest (17 testes) · pre-commit hooks              |
 
 ***
 
-## Testes
+## Testes Automatizados
 
 ```bash
-# Backend (31 testes: auth, predictions, stats, system, predictor, OOD)
-cd backend && pytest -q
+# Backend (36 testes: auth, predictions, stats, system, predictor, OOD, DICOM e laudos Multi-LLM)
+cd backend && uv run python -m pytest
 
-# Frontend (14 testes: components, login, predict, history)
+# Frontend (17 testes: PACS viewer, login, predict demo, history, new exam upload)
 cd frontend && npm run test
 
-# Lint
-cd backend && ruff check app
-cd frontend && npx tsc --noEmit
+# Linting e Validação Estática
+cd backend && uv run ruff check .
+cd frontend && npm run lint && npm run build
 ```
 
 ***
@@ -368,24 +393,22 @@ python validate_ood_threshold.py
 Resultados são registrados automaticamente no **MLflow** com:
 
 * Hiperparâmetros completos
-
 * Métricas por época (train/val accuracy)
-
 * Métricas finais (accuracy, F1, precision, recall por classe)
-
 * Modelo serializado como artefato
 
 ***
 
-## Deploy
+## Deploy em Produção
 
-| Plataforma             | Método                                            |
-| ---------------------- | ------------------------------------------------- |
-| **Render**             | Auto-deploy via `render.yaml` Blueprint           |
-| **Docker**             | `docker compose up` (PostgreSQL + API + Frontend) |
-| **HuggingFace Spaces** | Mesmo Dockerfile, `PORT=7860`                     |
+| Plataforma                 | Método                                                         | Custo Estimado |
+| -------------------------- | -------------------------------------------------------------- | -------------- |
+| **Google Cloud Run**       | Conteinerizado Serverless via Cloud Build / Artifact Registry  | **$0/mês** (Scale-to-Zero)|
+| **Render**                 | Auto-deploy via `render.yaml` Blueprint                        | Free Tier      |
+| **Docker Compose**         | `docker compose up --build` (PostgreSQL + API + Frontend)      | Local / VPS    |
+| **HuggingFace Spaces**     | Multi-stage Dockerfile, `PORT=7860`                            | Free Tier      |
 
-Veja [docs/deploy.md](docs/deploy.md) para instruções completas.
+Veja [docs/deploy.md](docs/deploy.md) para o guia detalhado de implantação.
 
 #
 

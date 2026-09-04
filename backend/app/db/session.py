@@ -18,13 +18,9 @@ def _prepare_sqlite_dir(database_url: str) -> None:
     """Ensure the parent directory of a SQLite file exists."""
     marker = "sqlite+aiosqlite:///"
     if database_url.startswith(marker):
-        raw = database_url[len(marker):]
+        raw = database_url[len(marker) :]
         if raw and raw != ":memory:":
-            db_path = (
-                Path(raw)
-                if raw.startswith("/")
-                else settings.resolve_path(raw.lstrip("/"))
-            )
+            db_path = Path(raw) if raw.startswith("/") else settings.resolve_path(raw.lstrip("/"))
             db_path.parent.mkdir(parents=True, exist_ok=True)
 
 

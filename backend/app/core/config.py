@@ -56,6 +56,16 @@ class Settings(BaseSettings):
     ood_threshold: float = 0.45  # cosine similarity below this → out-of-distribution
     ood_reference_dir: str = "../examples"  # directory with known X-ray images
 
+    # ---- Rate Limits ----
+    rate_limit_prediction: str = "60/minute"
+    rate_limit_report: str = "60/minute"
+
+    # ---- Multi-LLM Report Generation ----
+    gemini_api_key: str = ""
+    opencode_api_key: str = ""
+    opencode_base_url: str = "https://opencode.ai/zen/v1"
+    default_llm_model: str = "gemini-3.8-flash"
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def _split_origins(cls, value: object) -> object:

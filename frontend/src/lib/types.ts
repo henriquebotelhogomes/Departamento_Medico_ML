@@ -19,6 +19,20 @@ export interface ClassProbability {
   probability: number;
 }
 
+export interface DicomMetadata {
+  is_dicom: boolean;
+  modality: string;
+  body_part: string;
+  patient_position: string;
+  photometric_interpretation: string;
+  kvp: string;
+  exposure_time: string;
+  xray_tube_current: string;
+  study_description: string;
+  rows: number;
+  columns: number;
+}
+
 export interface PredictionResult {
   id: number;
   predicted_class: number;
@@ -28,9 +42,36 @@ export interface PredictionResult {
   inference_ms: number;
   image_url: string | null;
   gradcam_image: string | null;
+  raw_image_data?: string | null;
+  pure_heatmap?: string | null;
+  dicom_metadata?: DicomMetadata | null;
   is_ood: boolean;
   ood_similarity: number | null;
   created_at: string;
+}
+
+export interface ReportRequest {
+  predicted_class: number;
+  label: string;
+  confidence: number;
+  probs?: ClassProbability[];
+  model: string;
+  dicom_metadata?: DicomMetadata | null;
+  override_label?: string | null;
+  override_notes?: string | null;
+  is_ambiguous?: boolean | null;
+}
+
+export interface ReportResponse {
+  model_used: string;
+  provider: string;
+  technique: string;
+  findings: string;
+  impression: string;
+  icd_10: string;
+  recommendations: string;
+  disclaimer: string;
+  generated_at: string;
 }
 
 export interface PredictionOut {

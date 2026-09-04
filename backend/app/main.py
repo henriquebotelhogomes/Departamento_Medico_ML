@@ -11,7 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
@@ -68,7 +68,17 @@ def create_app() -> FastAPI:
     # --- Rate limiting ---
     limiter = Limiter(key_func=get_remote_address)
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+    async def _custom_rate_limit_handler(_req: Request, _exc: RateLimitExceeded) -> JSONResponse:
+        return JSONResponse(
+            status_code=429,
+            content={
+                "detail": "Limite de requisições por minuto atingido. "
+                "Aguarde alguns segundos e tente novamente."
+            },
+        )
+
+    app.add_exception_handler(RateLimitExceeded, _custom_rate_limit_handler)
 
     # --- Security headers ---
     app.add_middleware(SecurityHeadersMiddleware)
@@ -123,6 +133,7 @@ def create_app() -> FastAPI:
     if static_dir.is_dir():
         app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="spa")
     else:
+
         @app.get("/", tags=["system"])
         async def root() -> dict:
             return {"app": settings.app_name, "docs": "/api/docs"}

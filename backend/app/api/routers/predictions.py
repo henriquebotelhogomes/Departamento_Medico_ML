@@ -11,6 +11,7 @@ from slowapi.util import get_remote_address
 from sqlalchemy import delete, func, select
 
 from app.api.deps import CurrentUser, DbSession
+from app.core.config import settings
 from app.core.logging import get_logger
 from app.ml.labels import label_for
 from app.ml.predictor import get_predictor
@@ -20,15 +21,25 @@ from app.schemas.prediction import (
     PredictionListOut,
     PredictionOut,
     PredictionResult,
+    ReportRequest,
+    ReportResponse,
 )
+from app.services.llm_report import generate_medical_report
 from app.storage import get_storage
 
 router = APIRouter(prefix="/predictions", tags=["predictions"])
 logger = get_logger(__name__)
 limiter = Limiter(key_func=get_remote_address)
 
-ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp", "image/bmp"}
-MAX_FILE_BYTES = 10 * 1024 * 1024  # 10 MB
+ALLOWED_CONTENT_TYPES = {
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/bmp",
+    "application/dicom",
+    "application/octet-stream",
+}
+MAX_FILE_BYTES = 15 * 1024 * 1024  # 15 MB
 
 
 def _probs_to_list(probs: dict) -> list[ClassProbability]:
@@ -40,14 +51,15 @@ def _probs_to_list(probs: dict) -> list[ClassProbability]:
 
 
 @router.post("", response_model=PredictionResult, status_code=status.HTTP_201_CREATED)
-@limiter.limit("10/minute")
+@limiter.limit(settings.rate_limit_prediction)
 async def create_prediction(
     request: Request,
     current_user: CurrentUser,
     db: DbSession,
     file: Annotated[UploadFile, File(description="Chest X-ray image")],
 ) -> PredictionResult:
-    if file.content_type not in ALLOWED_CONTENT_TYPES:
+    is_dcm = bool(file.filename and file.filename.lower().endswith(".dcm"))
+    if file.content_type not in ALLOWED_CONTENT_TYPES and not is_dcm:
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
             detail=f"Unsupported file type: {file.content_type}",
@@ -108,10 +120,24 @@ async def create_prediction(
         inference_ms=record.inference_ms,
         image_url=image_url,
         gradcam_image=result.get("gradcam_image"),
+        raw_image_data=result.get("raw_image_data"),
+        pure_heatmap=result.get("pure_heatmap"),
+        dicom_metadata=result.get("dicom_metadata"),
         is_ood=result.get("is_ood", False),
         ood_similarity=result.get("ood_similarity"),
         created_at=record.created_at,
     )
+
+
+@router.post("/report", response_model=ReportResponse)
+@limiter.limit(settings.rate_limit_report)
+async def create_medical_report(
+    request: Request,
+    body: ReportRequest,
+    current_user: CurrentUser,
+) -> ReportResponse:
+    """Generate an AI-assisted structured radiology report using the selected LLM."""
+    return await generate_medical_report(body)
 
 
 @router.get("", response_model=PredictionListOut)

@@ -1,10 +1,11 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Activity, Globe, LayoutDashboard, LogOut, Moon, ScanLine, Sun } from "lucide-react";
+import { Activity, FilePlus, Globe, LayoutDashboard, LogOut, Moon, ScanLine, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 
 const navItems = [
+  { to: "/new-exam", key: "nav.new_exam", icon: FilePlus },
   { to: "/predict", key: "nav.predict", icon: ScanLine },
   { to: "/history", key: "nav.history", icon: Activity },
   { to: "/dashboard", key: "nav.dashboard", icon: LayoutDashboard },
@@ -29,7 +30,7 @@ export function Layout() {
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-[1700px] items-center justify-between px-4 sm:px-6 py-3">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-2 text-lg font-bold text-brand-600 dark:text-brand-400">
               <ScanLine className="h-5 w-5" /> {t("brand")}
@@ -94,7 +95,7 @@ export function Layout() {
           ))}
         </nav>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="mx-auto max-w-[1700px] px-4 sm:px-6 py-6">
         <Outlet />
       </main>
     </div>
