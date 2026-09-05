@@ -1,4 +1,4 @@
-﻿# 🤖 RadioAI — Governança & Arquitetura Multi-Agente (AGENTS.md)
+# 🤖 RadioAI — Governança & Arquitetura Multi-Agente (AGENTS.md)
 
 > **Manual de Diretrizes, Especialidades e Protocolos de Execução para Agentes Autônomos de IA e Desenvolvedores**  
 > **Repositório:** `henriquebotelhogomes/Departamento_Medico_ML`  
@@ -117,6 +117,16 @@ Ao receber tarefas neste repositório, o agente deve assumir a persona correspon
   4. **Inferência & Explainability:** Executar o classificador e calcular o mapa de calor Grad-CAM.
   5. **Conformal Assessment:** Determinar o conjunto de classes elegíveis e o índice de incerteza.
   6. **Persistência Segura:** Armazenar predição e imagem anonimizada com hash forense (SHA256).
+
+### C. Protocolo Pré-Commit & Pré-Push (Zero CI Failures)
+1. **Linter & Format Obrigatório no Commit:**
+   - Todo commit deve passar limpo no Ruff (`uv run ruff check app` e `uv run ruff format --check app` no backend) e no ESLint (`npm run lint` no frontend).
+   - Nenhuma linha de código ou prompt pode exceder o limite estipulado (`line-length = 100`).
+2. **Testes Pré-Push:**
+   - Antes de realizar ou solicitar push para o repositório remoto, a suíte de testes deve ser validada localmente (`uv run pytest` e `npm test -- --run`).
+3. **Proibição Inviolável de `--no-verify`:**
+   - É expressamente proibido utilizar `git commit --no-verify` ou `git push --no-verify`.
+   - Se os Git Hooks locais bloquearem a ação, investigue e conserte a causa raiz no código imediatamente; nunca desative ou burle os hooks.
 
 ---
 
