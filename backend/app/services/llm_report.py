@@ -11,12 +11,13 @@ Supports:
 from __future__ import annotations
 
 import datetime
+import time
 
 import httpx
 
 from app.core.config import settings
 from app.core.logging import get_logger
-from app.schemas.prediction import ReportRequest, ReportResponse
+from app.schemas.prediction import LLMTelemetry, ReportRequest, ReportResponse
 
 logger = get_logger(__name__)
 
@@ -104,9 +105,31 @@ LABEL_TO_CLASS = {
     "bacterial pneumonia": 3,
 }
 
+# Pricing per 1,000,000 tokens (USD)
+PRICING_TABLE = {
+    "gemini-3.8-flash": {"prompt": 0.075 / 1_000_000, "completion": 0.30 / 1_000_000},
+    "gemini-2.5-flash": {"prompt": 0.075 / 1_000_000, "completion": 0.30 / 1_000_000},
+    "deepseek-v4-flash": {"prompt": 0.14 / 1_000_000, "completion": 0.28 / 1_000_000},
+    "qwen3.7-plus": {"prompt": 0.40 / 1_000_000, "completion": 1.20 / 1_000_000},
+    "qwen3.7-max": {"prompt": 0.80 / 1_000_000, "completion": 2.40 / 1_000_000},
+    "gpt-5.6-luna": {"prompt": 0.50 / 1_000_000, "completion": 1.50 / 1_000_000},
+    "deterministic-local": {"prompt": 0.0, "completion": 0.0},
+}
+
+
+def calculate_llm_cost(model_key: str, prompt_tokens: int, completion_tokens: int) -> float:
+    """Calculate estimated cost in USD based on standard token pricing."""
+    pricing = PRICING_TABLE.get(model_key.lower().strip())
+    if not pricing:
+        pricing = {"prompt": 0.15 / 1_000_000, "completion": 0.60 / 1_000_000}
+    cost = (prompt_tokens * pricing["prompt"]) + (completion_tokens * pricing["completion"])
+    return round(cost, 6)
+
 
 def _generate_deterministic_report(
-    req: ReportRequest, fallback_reason: str | None = None
+    req: ReportRequest,
+    fallback_reason: str | None = None,
+    latency_ms: float = 0.0,
 ) -> ReportResponse:
     """Generate a high-standard deterministic clinical report based on ResNet50 prediction."""
     cid = req.predicted_class
@@ -139,6 +162,16 @@ def _generate_deterministic_report(
     else:
         impression_text = f"{data['impression']} (Confiança estimada: {conf_pct:.1f}%)."
 
+    telemetry = LLMTelemetry(
+        prompt_tokens=0,
+        completion_tokens=0,
+        total_tokens=0,
+        latency_ms=round(latency_ms, 2),
+        estimated_cost_usd=0.0,
+        fallback_triggered=bool(fallback_reason),
+        fallback_reason=fallback_reason,
+    )
+
     return ReportResponse(
         model_used=model_label,
         provider="Local Rule-Based Medical Engine",
@@ -149,6 +182,7 @@ def _generate_deterministic_report(
         recommendations=data["recommendations"],
         disclaimer=DEFAULT_DISCLAIMER,
         generated_at=datetime.datetime.now(datetime.UTC),
+        telemetry=telemetry,
     )
 
 
@@ -158,7 +192,9 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
 
     # If local engine explicitly requested, return immediately
     if "local" in model_choice or "deterministic" in model_choice:
-        return _generate_deterministic_report(req)
+        t0 = time.perf_counter()
+        rep = _generate_deterministic_report(req, latency_ms=(time.perf_counter() - t0) * 1000.0)
+        return rep
 
     # Prepare clinical prompt for all LLMs
     probs_info = ""
@@ -168,7 +204,8 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
         )
 
     system_prompt = (
-        "Você é um médico radiologista torácico sênior emitindo um laudo radiológico formal e técnico.\n"
+        "Você é um médico radiologista torácico sênior emitindo um laudo radiológico "
+        "formal e técnico.\n"
         "Estruture sua resposta EXATAMENTE com as seguintes seções em maiúsculas:\n"
         "TECNICA:\n"
         "ACHADOS:\n"
@@ -180,37 +217,45 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
 
     effective_label = req.override_label or req.label
     user_prompt = (
-        f"Exame: Radiografia de Tórax Digital.\n"
+        "Exame: Radiografia de Tórax Digital.\n"
         f"Diagnóstico Clínico Principal: {effective_label}.\n"
-        f"Predição Neural Inicial: {req.label} (Confiança Calibrada: {req.confidence * 100:.1f}%).\n"
+        f"Predição Neural Inicial: {req.label} "
+        f"(Confiança Calibrada: {req.confidence * 100:.1f}%).\n"
         f"{probs_info}\n"
         f"Metadados Técnicos: {req.dicom_metadata or 'Radiografia Digital Convencional'}\n\n"
     )
 
     if req.override_label:
         user_prompt += (
-            f"[INTERVENÇÃO HUMANA / SOBREESCRITA DO MÉDICO RADIOLOGISTA]:\n"
-            f"O médico assistente revisou o exame e, por decisão clínica soberana presencial, "
+            "[INTERVENÇÃO HUMANA / SOBREESCRITA DO MÉDICO RADIOLOGISTA]:\n"
+            "O médico assistente revisou o exame e, por decisão clínica soberana presencial, "
             f"sobrescreveu o diagnóstico da IA de '{req.label}' para '{req.override_label}'.\n"
-            f"Justificativa médica fornecida: '{req.override_notes or 'Correlação clínico-laboratorial e propedêutica'}'.\n"
-            f"Redija o laudo confirmando expressamente '{req.override_label}' com código CID-10 condizente, "
-            f"mencionando na discussão técnica a hipótese alternativa descartada no diagnóstico diferencial e orientando conduta.\n"
+            f"Justificativa médica fornecida: "
+            f"'{req.override_notes or 'Correlação clínico-laboratorial e propedêutica'}'.\n"
+            f"Redija o laudo confirmando expressamente '{req.override_label}' com código CID-10 "
+            "condizente, mencionando na discussão técnica a hipótese alternativa descartada no "
+            "diagnóstico diferencial e orientando conduta.\n"
         )
     elif req.is_ambiguous:
         user_prompt += (
-            f"[ALERTA DE ALTA INCERTEZA / EMPATE TÉCNICO]:\n"
-            f"O exame apresenta distribuição de probabilidades muito próxima entre as hipóteses diagnósticas principais (margem estreita). "
-            f"Redija o laudo mantendo o DIAGNÓSTICO DIFERENCIAL ABERTO, descrevendo os achados radiológicos, "
-            f"e recomendando enfaticamente correlação com dosagem de Procalcitonina sérica (para diferenciação entre bacteriana e viral), "
-            f"PCR quantitativa e Painel Molecular Viral para confirmação antes de fechar a conduta terapêutica.\n"
+            "[ALERTA DE ALTA INCERTEZA / EMPATE TÉCNICO]:\n"
+            "O exame apresenta distribuição de probabilidades muito próxima entre as hipóteses "
+            "diagnósticas principais (margem estreita). "
+            "Redija o laudo mantendo o DIAGNÓSTICO DIFERENCIAL ABERTO, descrevendo os achados "
+            "radiológicos, e recomendando enfaticamente correlação com dosagem de Procalcitonina "
+            "sérica (para diferenciação entre bacteriana e viral), PCR quantitativa e Painel "
+            "Molecular Viral para confirmação antes de fechar a conduta terapêutica.\n"
         )
     else:
         user_prompt += (
-            f"Quadro do Paciente: O exame apresenta alterações radiológicas características de {effective_label}.\n"
-            f"Como médico radiologista assistente, redija o laudo radiológico formal descrevendo detalhadamente os "
-            f"achados pleuropulmonares condizentes com {effective_label}, a impressão diagnóstica conclusiva confirmando {effective_label}, "
-            f"e o código CID-10 exato da patologia (exemplo: U07.1 para Covid-19, J15.9 para pneumonia bacteriana, "
-            f"J12.9 para pneumonia viral, Z00.0 para exame normal).\n"
+            "Quadro do Paciente: O exame apresenta alterações radiológicas características de "
+            f"{effective_label}.\n"
+            "Como médico radiologista assistente, redija o laudo radiológico formal descrevendo "
+            f"detalhadamente os achados pleuropulmonares condizentes com {effective_label}, "
+            f"a impressão diagnóstica conclusiva confirmando {effective_label}, "
+            "e o código CID-10 exato da patologia (exemplo: U07.1 para Covid-19, "
+            "J15.9 para pneumonia bacteriana, J12.9 para pneumonia viral, "
+            "Z00.0 para exame normal).\n"
         )
 
     # 1. Google Gemini 3.8 Flash / Gemini 2.5 Flash
@@ -220,6 +265,7 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
             return _generate_deterministic_report(
                 req, fallback_reason="GEMINI_API_KEY não configurada"
             )
+        t0 = time.perf_counter()
         try:
             base_gemini = "https://generativelanguage.googleapis.com/v1beta/models"
             url = f"{base_gemini}/gemini-2.5-flash:generateContent?key={api_key}"
@@ -238,19 +284,43 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
             }
             async with httpx.AsyncClient(timeout=20.0) as client:
                 res = await client.post(url, json=payload)
+                latency_ms = (time.perf_counter() - t0) * 1000.0
                 if res.status_code == 200:
-                    raw_text = res.json()["candidates"][0]["content"]["parts"][0]["text"]
+                    res_json = res.json()
+                    raw_text = res_json["candidates"][0]["content"]["parts"][0]["text"]
+                    usage = res_json.get("usageMetadata", {})
+                    p_tokens = usage.get("promptTokenCount", 0)
+                    c_tokens = usage.get("candidatesTokenCount", 0)
+                    t_tokens = usage.get("totalTokenCount", p_tokens + c_tokens)
+                    cost = calculate_llm_cost("gemini-3.8-flash", p_tokens, c_tokens)
+
+                    telemetry = LLMTelemetry(
+                        prompt_tokens=p_tokens,
+                        completion_tokens=c_tokens,
+                        total_tokens=t_tokens,
+                        latency_ms=round(latency_ms, 2),
+                        estimated_cost_usd=cost,
+                        fallback_triggered=False,
+                    )
                     return _parse_llm_response(
-                        raw_text, model_name="Gemini 3.8 Flash", provider="Google AI"
+                        raw_text,
+                        model_name="Gemini 3.8 Flash",
+                        provider="Google AI",
+                        telemetry=telemetry,
                     )
                 logger.warning("gemini_api_error", status_code=res.status_code, body=res.text)
                 return _generate_deterministic_report(
-                    req, fallback_reason=f"Google API erro {res.status_code}"
+                    req,
+                    fallback_reason=f"Google API erro {res.status_code}",
+                    latency_ms=latency_ms,
                 )
         except Exception as e:
+            latency_ms = (time.perf_counter() - t0) * 1000.0
             logger.error("gemini_exception", error=str(e))
             return _generate_deterministic_report(
-                req, fallback_reason=f"Erro de conexão Gemini: {e}"
+                req,
+                fallback_reason=f"Erro de conexão Gemini: {e}",
+                latency_ms=latency_ms,
             )
 
     # 2. OpenCode Go (GPT 5.6 Luna, DeepSeek V4 Flash, Qwen 3.8 Flash)
@@ -278,6 +348,7 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
         display_name = model_choice
         endpoint_type = "chat"
 
+    t0 = time.perf_counter()
     try:
         base_url = settings.opencode_base_url.rstrip("/")
         if not base_url.endswith("/zen/v1"):
@@ -318,7 +389,7 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
 
         async with httpx.AsyncClient(timeout=25.0) as client:
             res = await client.post(url, headers=headers, json=payload)
-            
+
             # Se /responses retornar 404 para GPT, tenta fallback para /chat/completions
             if res.status_code == 404 and endpoint_type == "responses":
                 url_fallback = f"{base_url}/chat/completions"
@@ -333,6 +404,8 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
                 }
                 res = await client.post(url_fallback, headers=headers, json=payload_fallback)
 
+            latency_ms = (time.perf_counter() - t0) * 1000.0
+
             if res.status_code == 200:
                 data = res.json()
                 if "choices" in data and len(data["choices"]) > 0:
@@ -341,26 +414,58 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
                     raw_text = data["output_text"]
                 elif "content" in data and isinstance(data["content"], list):
                     raw_text = data["content"][0].get("text", "")
-                elif "output" in data and isinstance(data["output"], list) and len(data["output"]) > 0:
+                elif (
+                    "output" in data
+                    and isinstance(data["output"], list)
+                    and len(data["output"]) > 0
+                ):
                     raw_text = data["output"][0].get("content", [{}])[0].get("text", "")
                 else:
                     raw_text = str(data)
 
+                usage = data.get("usage", {})
+                p_tokens = usage.get("prompt_tokens", 0)
+                c_tokens = usage.get("completion_tokens", 0)
+                t_tokens = usage.get("total_tokens", p_tokens + c_tokens)
+                cost = calculate_llm_cost(target_model, p_tokens, c_tokens)
+
+                telemetry = LLMTelemetry(
+                    prompt_tokens=p_tokens,
+                    completion_tokens=c_tokens,
+                    total_tokens=t_tokens,
+                    latency_ms=round(latency_ms, 2),
+                    estimated_cost_usd=cost,
+                    fallback_triggered=False,
+                )
+
                 return _parse_llm_response(
-                    raw_text, model_name=display_name, provider="OpenCode Go"
+                    raw_text,
+                    model_name=display_name,
+                    provider="OpenCode Go",
+                    telemetry=telemetry,
                 )
             logger.warning("opencode_api_error", status_code=res.status_code, body=res.text)
             return _generate_deterministic_report(
-                req, fallback_reason=f"OpenCode Go erro {res.status_code}"
+                req,
+                fallback_reason=f"OpenCode Go erro {res.status_code}",
+                latency_ms=latency_ms,
             )
     except Exception as e:
+        latency_ms = (time.perf_counter() - t0) * 1000.0
         logger.error("opencode_exception", error=str(e))
         return _generate_deterministic_report(
-            req, fallback_reason=f"Erro de conexão OpenCode Go: {e}"
+            req,
+            fallback_reason=f"Erro de conexão OpenCode Go: {e}",
+            latency_ms=latency_ms,
         )
 
 
-def _parse_llm_response(raw_text: str, model_name: str, provider: str) -> ReportResponse:
+def _parse_llm_response(
+    raw_text: str,
+    model_name: str,
+    provider: str,
+    telemetry: LLMTelemetry | None = None,
+) -> ReportResponse:
     """Parse structured sections from the LLM completion."""
     sections: dict[str, str] = {
         "TECNICA": "",
@@ -410,4 +515,5 @@ def _parse_llm_response(raw_text: str, model_name: str, provider: str) -> Report
         recommendations=sections["RECOMENDACOES"] or "Correlação com dados clínicos.",
         disclaimer=DEFAULT_DISCLAIMER,
         generated_at=datetime.datetime.now(datetime.UTC),
+        telemetry=telemetry,
     )

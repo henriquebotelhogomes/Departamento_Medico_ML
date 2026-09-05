@@ -62,6 +62,16 @@ export interface ReportRequest {
   is_ambiguous?: boolean | null;
 }
 
+export interface LLMTelemetry {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  latency_ms: number;
+  estimated_cost_usd: number;
+  fallback_triggered: boolean;
+  fallback_reason?: string | null;
+}
+
 export interface ReportResponse {
   model_used: string;
   provider: string;
@@ -72,6 +82,7 @@ export interface ReportResponse {
   recommendations: string;
   disclaimer: string;
   generated_at: string;
+  telemetry?: LLMTelemetry | null;
 }
 
 export interface PredictionOut {

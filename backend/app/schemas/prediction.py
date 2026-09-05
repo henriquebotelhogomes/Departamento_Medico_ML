@@ -45,6 +45,18 @@ class ReportRequest(BaseModel):
     is_ambiguous: bool | None = None
 
 
+class LLMTelemetry(BaseModel):
+    """Real-time observability and FinOps telemetry for LLM report generation."""
+
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    total_tokens: int = 0
+    latency_ms: float = 0.0
+    estimated_cost_usd: float = 0.0
+    fallback_triggered: bool = False
+    fallback_reason: str | None = None
+
+
 class ReportResponse(BaseModel):
     model_used: str
     provider: str
@@ -55,6 +67,7 @@ class ReportResponse(BaseModel):
     recommendations: str
     disclaimer: str
     generated_at: datetime
+    telemetry: LLMTelemetry | None = None
 
 
 class PredictionOut(BaseModel):

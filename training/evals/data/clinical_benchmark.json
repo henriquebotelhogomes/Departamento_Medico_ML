@@ -1,0 +1,1513 @@
+[
+  {
+    "case_id": "COVID-01-TYP",
+    "category": "typical_covid",
+    "input": {
+      "predicted_class": 0,
+      "label": "Covid-19",
+      "confidence": 0.98,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.98
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.004
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.012
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.004
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "U07.1",
+      "mandatory_findings_keywords": [
+        "vidro fosco",
+        "periféric",
+        "bilateral"
+      ],
+      "forbidden_hallucinations": [
+        "pneumotórax",
+        "derrame pleural maciço",
+        "cavitação"
+      ],
+      "expected_impression_keywords": [
+        "covid-19",
+        "sars-cov-2"
+      ]
+    }
+  },
+  {
+    "case_id": "COVID-02-TYP",
+    "category": "typical_covid",
+    "input": {
+      "predicted_class": 0,
+      "label": "Covid-19",
+      "confidence": 0.92,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.92
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.016
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.048
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.016
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "AP",
+        "kvp": "110"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "U07.1",
+      "mandatory_findings_keywords": [
+        "vidro fosco",
+        "basal"
+      ],
+      "forbidden_hallucinations": [
+        "pneumotórax",
+        "derrame pleural maciço",
+        "cavitação"
+      ],
+      "expected_impression_keywords": [
+        "covid-19",
+        "sars-cov-2"
+      ]
+    }
+  },
+  {
+    "case_id": "COVID-03-TYP",
+    "category": "typical_covid",
+    "input": {
+      "predicted_class": 0,
+      "label": "Covid-19",
+      "confidence": 0.95,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.95
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.01
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.03
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.01
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "125"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "U07.1",
+      "mandatory_findings_keywords": [
+        "multifocal",
+        "subpleural"
+      ],
+      "forbidden_hallucinations": [
+        "pneumotórax",
+        "derrame pleural maciço",
+        "cavitação"
+      ],
+      "expected_impression_keywords": [
+        "covid-19",
+        "sars-cov-2"
+      ]
+    }
+  },
+  {
+    "case_id": "COVID-04-TYP",
+    "category": "typical_covid",
+    "input": {
+      "predicted_class": 0,
+      "label": "Covid-19",
+      "confidence": 0.89,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.89
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.022
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.066
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.022
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "118"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "U07.1",
+      "mandatory_findings_keywords": [
+        "vidro fosco"
+      ],
+      "forbidden_hallucinations": [
+        "pneumotórax",
+        "derrame pleural maciço",
+        "cavitação"
+      ],
+      "expected_impression_keywords": [
+        "covid-19",
+        "sars-cov-2"
+      ]
+    }
+  },
+  {
+    "case_id": "COVID-05-TYP",
+    "category": "typical_covid",
+    "input": {
+      "predicted_class": 0,
+      "label": "Covid-19",
+      "confidence": 0.94,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.94
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.012
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.036
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.012
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "AP",
+        "kvp": "105"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "U07.1",
+      "mandatory_findings_keywords": [
+        "bilateral",
+        "periférico"
+      ],
+      "forbidden_hallucinations": [
+        "pneumotórax",
+        "derrame pleural maciço",
+        "cavitação"
+      ],
+      "expected_impression_keywords": [
+        "covid-19",
+        "sars-cov-2"
+      ]
+    }
+  },
+  {
+    "case_id": "COVID-06-TYP",
+    "category": "typical_covid",
+    "input": {
+      "predicted_class": 0,
+      "label": "Covid-19",
+      "confidence": 0.91,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.91
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.018
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.054
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.018
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "U07.1",
+      "mandatory_findings_keywords": [
+        "vidro fosco",
+        "multifocal"
+      ],
+      "forbidden_hallucinations": [
+        "pneumotórax",
+        "derrame pleural maciço",
+        "cavitação"
+      ],
+      "expected_impression_keywords": [
+        "covid-19",
+        "sars-cov-2"
+      ]
+    }
+  },
+  {
+    "case_id": "NORM-01-TYP",
+    "category": "typical_normal",
+    "input": {
+      "predicted_class": 1,
+      "label": "Normal",
+      "confidence": 0.99,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.002
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.99
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.005
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.003
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "Z00.0",
+      "mandatory_findings_keywords": [
+        "normal"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação",
+        "vidro fosco",
+        "pneumonia"
+      ],
+      "expected_impression_keywords": [
+        "normal"
+      ]
+    }
+  },
+  {
+    "case_id": "NORM-02-TYP",
+    "category": "typical_normal",
+    "input": {
+      "predicted_class": 1,
+      "label": "Normal",
+      "confidence": 0.97,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.006
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.97
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.015
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.009
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "115"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "Z00.0",
+      "mandatory_findings_keywords": [
+        "normal"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação",
+        "vidro fosco",
+        "pneumonia"
+      ],
+      "expected_impression_keywords": [
+        "normal"
+      ]
+    }
+  },
+  {
+    "case_id": "NORM-03-TYP",
+    "category": "typical_normal",
+    "input": {
+      "predicted_class": 1,
+      "label": "Normal",
+      "confidence": 0.95,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.01
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.95
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.025
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.015
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "AP",
+        "kvp": "110"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "Z00.0",
+      "mandatory_findings_keywords": [
+        "normal"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação",
+        "vidro fosco",
+        "pneumonia"
+      ],
+      "expected_impression_keywords": [
+        "normal"
+      ]
+    }
+  },
+  {
+    "case_id": "NORM-04-TYP",
+    "category": "typical_normal",
+    "input": {
+      "predicted_class": 1,
+      "label": "Normal",
+      "confidence": 0.98,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.004
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.98
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.01
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.006
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "125"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "Z00.0",
+      "mandatory_findings_keywords": [
+        "normal"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação",
+        "vidro fosco",
+        "pneumonia"
+      ],
+      "expected_impression_keywords": [
+        "normal"
+      ]
+    }
+  },
+  {
+    "case_id": "NORM-05-TYP",
+    "category": "typical_normal",
+    "input": {
+      "predicted_class": 1,
+      "label": "Normal",
+      "confidence": 0.96,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.008
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.96
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.02
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.012
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "118"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "Z00.0",
+      "mandatory_findings_keywords": [
+        "normal"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação",
+        "vidro fosco",
+        "pneumonia"
+      ],
+      "expected_impression_keywords": [
+        "normal"
+      ]
+    }
+  },
+  {
+    "case_id": "NORM-06-TYP",
+    "category": "typical_normal",
+    "input": {
+      "predicted_class": 1,
+      "label": "Normal",
+      "confidence": 0.94,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.012
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.94
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.03
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.018
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "AP",
+        "kvp": "112"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "Z00.0",
+      "mandatory_findings_keywords": [
+        "normal"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação",
+        "vidro fosco",
+        "pneumonia"
+      ],
+      "expected_impression_keywords": [
+        "normal"
+      ]
+    }
+  },
+  {
+    "case_id": "VIRAL-01-TYP",
+    "category": "typical_viral",
+    "input": {
+      "predicted_class": 2,
+      "label": "Pneumonia viral",
+      "confidence": 0.96,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.012
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.004
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.96
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.024
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J12.9",
+      "mandatory_findings_keywords": [
+        "intersticial",
+        "viral"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação lobar franca",
+        "pneumotórax"
+      ],
+      "expected_impression_keywords": [
+        "viral"
+      ]
+    }
+  },
+  {
+    "case_id": "VIRAL-02-TYP",
+    "category": "typical_viral",
+    "input": {
+      "predicted_class": 2,
+      "label": "Pneumonia viral",
+      "confidence": 0.91,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.027
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.009
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.91
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.054
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "AP",
+        "kvp": "115"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J12.9",
+      "mandatory_findings_keywords": [
+        "intersticial",
+        "viral"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação lobar franca",
+        "pneumotórax"
+      ],
+      "expected_impression_keywords": [
+        "viral"
+      ]
+    }
+  },
+  {
+    "case_id": "VIRAL-03-TYP",
+    "category": "typical_viral",
+    "input": {
+      "predicted_class": 2,
+      "label": "Pneumonia viral",
+      "confidence": 0.94,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.018
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.006
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.94
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.036
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "122"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J12.9",
+      "mandatory_findings_keywords": [
+        "intersticial",
+        "viral"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação lobar franca",
+        "pneumotórax"
+      ],
+      "expected_impression_keywords": [
+        "viral"
+      ]
+    }
+  },
+  {
+    "case_id": "VIRAL-04-TYP",
+    "category": "typical_viral",
+    "input": {
+      "predicted_class": 2,
+      "label": "Pneumonia viral",
+      "confidence": 0.88,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.036
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.012
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.88
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.072
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "118"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J12.9",
+      "mandatory_findings_keywords": [
+        "intersticial",
+        "viral"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação lobar franca",
+        "pneumotórax"
+      ],
+      "expected_impression_keywords": [
+        "viral"
+      ]
+    }
+  },
+  {
+    "case_id": "VIRAL-05-TYP",
+    "category": "typical_viral",
+    "input": {
+      "predicted_class": 2,
+      "label": "Pneumonia viral",
+      "confidence": 0.93,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.021
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.007
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.93
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.042
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "AP",
+        "kvp": "110"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J12.9",
+      "mandatory_findings_keywords": [
+        "intersticial",
+        "viral"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação lobar franca",
+        "pneumotórax"
+      ],
+      "expected_impression_keywords": [
+        "viral"
+      ]
+    }
+  },
+  {
+    "case_id": "VIRAL-06-TYP",
+    "category": "typical_viral",
+    "input": {
+      "predicted_class": 2,
+      "label": "Pneumonia viral",
+      "confidence": 0.95,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.015
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.005
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.95
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.03
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J12.9",
+      "mandatory_findings_keywords": [
+        "intersticial",
+        "viral"
+      ],
+      "forbidden_hallucinations": [
+        "consolidação lobar franca",
+        "pneumotórax"
+      ],
+      "expected_impression_keywords": [
+        "viral"
+      ]
+    }
+  },
+  {
+    "case_id": "BACT-01-TYP",
+    "category": "typical_bacterial",
+    "input": {
+      "predicted_class": 3,
+      "label": "Pneumonia bacteriana",
+      "confidence": 0.97,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.003
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.003
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.006
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.97
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J15.9",
+      "mandatory_findings_keywords": [
+        "consolidação",
+        "broncograma"
+      ],
+      "forbidden_hallucinations": [
+        "tuberculose miliar"
+      ],
+      "expected_impression_keywords": [
+        "bacteriana"
+      ]
+    }
+  },
+  {
+    "case_id": "BACT-02-TYP",
+    "category": "typical_bacterial",
+    "input": {
+      "predicted_class": 3,
+      "label": "Pneumonia bacteriana",
+      "confidence": 0.93,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.007
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.007
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.014
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.93
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "AP",
+        "kvp": "115"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J15.9",
+      "mandatory_findings_keywords": [
+        "consolidação",
+        "broncograma"
+      ],
+      "forbidden_hallucinations": [
+        "tuberculose miliar"
+      ],
+      "expected_impression_keywords": [
+        "bacteriana"
+      ]
+    }
+  },
+  {
+    "case_id": "BACT-03-TYP",
+    "category": "typical_bacterial",
+    "input": {
+      "predicted_class": 3,
+      "label": "Pneumonia bacteriana",
+      "confidence": 0.96,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.004
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.004
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.008
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.96
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "125"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J15.9",
+      "mandatory_findings_keywords": [
+        "consolidação",
+        "broncograma"
+      ],
+      "forbidden_hallucinations": [
+        "tuberculose miliar"
+      ],
+      "expected_impression_keywords": [
+        "bacteriana"
+      ]
+    }
+  },
+  {
+    "case_id": "BACT-04-TYP",
+    "category": "typical_bacterial",
+    "input": {
+      "predicted_class": 3,
+      "label": "Pneumonia bacteriana",
+      "confidence": 0.91,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.009
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.009
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.018
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.91
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "122"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J15.9",
+      "mandatory_findings_keywords": [
+        "consolidação",
+        "broncograma"
+      ],
+      "forbidden_hallucinations": [
+        "tuberculose miliar"
+      ],
+      "expected_impression_keywords": [
+        "bacteriana"
+      ]
+    }
+  },
+  {
+    "case_id": "BACT-05-TYP",
+    "category": "typical_bacterial",
+    "input": {
+      "predicted_class": 3,
+      "label": "Pneumonia bacteriana",
+      "confidence": 0.95,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.005
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.005
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.01
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.95
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "AP",
+        "kvp": "110"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J15.9",
+      "mandatory_findings_keywords": [
+        "consolidação",
+        "broncograma"
+      ],
+      "forbidden_hallucinations": [
+        "tuberculose miliar"
+      ],
+      "expected_impression_keywords": [
+        "bacteriana"
+      ]
+    }
+  },
+  {
+    "case_id": "BACT-06-TYP",
+    "category": "typical_bacterial",
+    "input": {
+      "predicted_class": 3,
+      "label": "Pneumonia bacteriana",
+      "confidence": 0.94,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.006
+        },
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.006
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.012
+        },
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.94
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "118"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": false
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J15.9",
+      "mandatory_findings_keywords": [
+        "consolidação",
+        "broncograma"
+      ],
+      "forbidden_hallucinations": [
+        "tuberculose miliar"
+      ],
+      "expected_impression_keywords": [
+        "bacteriana"
+      ]
+    }
+  },
+  {
+    "case_id": "AMB-01-UNCERTAINTY",
+    "category": "ambiguity",
+    "input": {
+      "predicted_class": 3,
+      "label": "Pneumonia bacteriana",
+      "confidence": 0.51,
+      "probs": [
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.51
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.49
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": true
+    },
+    "ground_truth": {
+      "expected_icd_prefix": [
+        "J15.9",
+        "J12.9",
+        "J18.9"
+      ],
+      "mandatory_findings_keywords": [
+        "procalcitonina",
+        "diferencial"
+      ],
+      "forbidden_hallucinations": [
+        "certeza inquestionável"
+      ],
+      "expected_impression_keywords": [
+        "diferencial"
+      ]
+    }
+  },
+  {
+    "case_id": "AMB-02-UNCERTAINTY",
+    "category": "ambiguity",
+    "input": {
+      "predicted_class": 0,
+      "label": "Covid-19",
+      "confidence": 0.52,
+      "probs": [
+        {
+          "class_id": 0,
+          "label": "Covid-19",
+          "probability": 0.52
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.48
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": true
+    },
+    "ground_truth": {
+      "expected_icd_prefix": [
+        "U07.1",
+        "J12.9"
+      ],
+      "mandatory_findings_keywords": [
+        "pcr",
+        "viral",
+        "diferencial"
+      ],
+      "forbidden_hallucinations": [
+        "certeza inquestionável"
+      ],
+      "expected_impression_keywords": [
+        "diferencial"
+      ]
+    }
+  },
+  {
+    "case_id": "AMB-03-UNCERTAINTY",
+    "category": "ambiguity",
+    "input": {
+      "predicted_class": 1,
+      "label": "Normal",
+      "confidence": 0.53,
+      "probs": [
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.53
+        },
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.47
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": null,
+      "override_notes": null,
+      "is_ambiguous": true
+    },
+    "ground_truth": {
+      "expected_icd_prefix": [
+        "Z00.0",
+        "J12.9"
+      ],
+      "mandatory_findings_keywords": [
+        "diferencial",
+        "correlação"
+      ],
+      "forbidden_hallucinations": [
+        "certeza inquestionável"
+      ],
+      "expected_impression_keywords": [
+        "diferencial"
+      ]
+    }
+  },
+  {
+    "case_id": "HITL-01-OVERRIDE",
+    "category": "human_override",
+    "input": {
+      "predicted_class": 3,
+      "label": "Pneumonia bacteriana",
+      "confidence": 0.51,
+      "probs": [
+        {
+          "class_id": 3,
+          "label": "Pneumonia bacteriana",
+          "probability": 0.51
+        },
+        {
+          "class_id": 0,
+          "label": "Outra",
+          "probability": 0.49
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": "Pneumonia viral",
+      "override_notes": "Procalcitonina baixa < 0.1 ug/L",
+      "is_ambiguous": true
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J12.9",
+      "mandatory_findings_keywords": [
+        "viral",
+        "procalcitonina"
+      ],
+      "forbidden_hallucinations": [
+        "desrespeito à conduta do médico"
+      ],
+      "expected_impression_keywords": [
+        "pneumonia viral"
+      ]
+    }
+  },
+  {
+    "case_id": "HITL-02-OVERRIDE",
+    "category": "human_override",
+    "input": {
+      "predicted_class": 1,
+      "label": "Normal",
+      "confidence": 0.6,
+      "probs": [
+        {
+          "class_id": 1,
+          "label": "Normal",
+          "probability": 0.6
+        },
+        {
+          "class_id": 0,
+          "label": "Outra",
+          "probability": 0.4
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": "Covid-19",
+      "override_notes": "RT-PCR positivo e tosse seca",
+      "is_ambiguous": true
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "U07.1",
+      "mandatory_findings_keywords": [
+        "covid",
+        "sars-cov-2"
+      ],
+      "forbidden_hallucinations": [
+        "desrespeito à conduta do médico"
+      ],
+      "expected_impression_keywords": [
+        "covid-19"
+      ]
+    }
+  },
+  {
+    "case_id": "HITL-03-OVERRIDE",
+    "category": "human_override",
+    "input": {
+      "predicted_class": 2,
+      "label": "Pneumonia viral",
+      "confidence": 0.52,
+      "probs": [
+        {
+          "class_id": 2,
+          "label": "Pneumonia viral",
+          "probability": 0.52
+        },
+        {
+          "class_id": 0,
+          "label": "Outra",
+          "probability": 0.48
+        }
+      ],
+      "dicom_metadata": {
+        "patient_position": "PA",
+        "kvp": "120"
+      },
+      "override_label": "Pneumonia bacteriana",
+      "override_notes": "Leucocitose com desvio e febre alta 39C",
+      "is_ambiguous": true
+    },
+    "ground_truth": {
+      "expected_icd_prefix": "J15.9",
+      "mandatory_findings_keywords": [
+        "bacteriana",
+        "leucocitose"
+      ],
+      "forbidden_hallucinations": [
+        "desrespeito à conduta do médico"
+      ],
+      "expected_impression_keywords": [
+        "pneumonia bacteriana"
+      ]
+    }
+  }
+]

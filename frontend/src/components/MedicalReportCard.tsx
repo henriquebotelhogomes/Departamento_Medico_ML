@@ -12,6 +12,10 @@ import {
   Bot,
   Columns,
   Layers,
+  Clock,
+  BarChart2,
+  DollarSign,
+  AlertTriangle,
 } from "lucide-react";
 import { generateReport } from "@/lib/api";
 import type { PredictionResult, ReportResponse } from "@/lib/types";
@@ -337,6 +341,19 @@ ${activeReport.disclaimer}
                           </h5>
                           <p className="mt-0.5 text-slate-600 dark:text-slate-400 text-[11px]">{rep.recommendations}</p>
                         </div>
+
+                        {rep.telemetry && (
+                          <div className="pt-2 border-t border-slate-200 dark:border-slate-800/60 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3 text-sky-500" />
+                              {(rep.telemetry.latency_ms / 1000).toFixed(2)}s
+                            </span>
+                            <span>{rep.telemetry.total_tokens} tok</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                              ${rep.telemetry.estimated_cost_usd.toFixed(5)}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -414,6 +431,63 @@ ${activeReport.disclaimer}
                     <p className="mt-0.5 text-slate-600 dark:text-slate-400">{activeReport.recommendations}</p>
                   </div>
                 </div>
+
+                {/* AI Observability & FinOps Telemetry Card */}
+                {activeReport.telemetry && (
+                  <div className="no-print rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 p-3 text-xs text-slate-600 dark:text-slate-400 space-y-2">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/80 pb-1.5">
+                      <span className="font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <BarChart2 className="h-3.5 w-3.5 text-sky-500" />
+                        Observabilidade & FinOps de IA
+                      </span>
+                      {activeReport.telemetry.fallback_triggered ? (
+                        <span className="inline-flex items-center space-x-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                          <AlertTriangle className="h-3 w-3" />
+                          <span>Degradação / Fallback</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center space-x-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                          <span>✓ Conectado</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-0.5 text-[11px] font-mono">
+                      <div className="flex flex-col">
+                        <span className="text-[9px] uppercase text-slate-400">Latência Líquida:</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1 mt-0.5">
+                          <Clock className="h-3 w-3 text-sky-500" />
+                          {(activeReport.telemetry.latency_ms / 1000).toFixed(2)}s
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <span className="text-[9px] uppercase text-slate-400">Consumo de Tokens:</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                          {activeReport.telemetry.total_tokens > 0 ? (
+                            <span>{activeReport.telemetry.total_tokens} <span className="text-[9px] text-slate-400 font-normal">({activeReport.telemetry.prompt_tokens} in / {activeReport.telemetry.completion_tokens} out)</span></span>
+                          ) : (
+                            <span className="text-slate-400 font-normal">0 (Offline)</span>
+                          )}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <span className="text-[9px] uppercase text-slate-400">Custo Estimado:</span>
+                        <span className="font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1 mt-0.5">
+                          <DollarSign className="h-3 w-3 text-emerald-500" />
+                          ${activeReport.telemetry.estimated_cost_usd.toFixed(5)} USD
+                        </span>
+                      </div>
+                    </div>
+
+                    {activeReport.telemetry.fallback_triggered && activeReport.telemetry.fallback_reason && (
+                      <p className="text-[10px] text-amber-700 dark:text-amber-400 font-medium pt-1 border-t border-amber-500/20">
+                        Nota de Resiliência: {activeReport.telemetry.fallback_reason}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex items-start space-x-2 rounded-lg bg-amber-500/10 border border-amber-500/20 p-2.5 text-[11px] text-amber-800 dark:text-amber-300/80">
                   <ShieldCheck className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
