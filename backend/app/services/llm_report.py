@@ -63,6 +63,7 @@ def _store_in_cache(key: str, rep: ReportResponse) -> None:
         del _REPORT_CACHE[first_key]
     _REPORT_CACHE[key] = rep
 
+
 # Medical ICD-10 and Clinical findings reference dictionary
 CLINICAL_KNOWLEDGE = {
     0: {  # Covid-19

@@ -45,20 +45,25 @@ Para testar a plataforma sem necessidade de clonar o repositório ou instalar de
 ## 📸 Demonstração da Estação PACS & Recursos
 
 <p align="center">
-  <img src="docs/screenshots/predicao_1.png" alt="Predição com Grad-CAM" width="88%">
+  <img src="docs/demo.gif" alt="Demonstração do RadioAI em Ação" width="96%">
 </p>
 
-<p align="center"><em>Estação PACS médica com <strong>mapa de atenção Grad-CAM</strong>: a rede neural classifica o raio-X e destaca as regiões pulmonares de maior relevância diagnóstica, garantindo explicabilidade clínica.</em></p>
+<p align="center"><em>Fluxo completo de triagem radiológica: autenticação clínica com conta demo (1-click), galeria de casos reais, inferência ResNet-50 com Grad-CAM++, laudo estruturado com telemetria FinOps, consenso multi-IA comparativo, auditoria com hash forense e dashboard analítico.</em></p>
 
-| Painel Analítico & FinOps | Documentação Interativa da API (Swagger) |
+| Estação PACS & Explicabilidade Grad-CAM | Consenso Radiológico Multi-IA Lado a Lado |
 | :---: | :---: |
-| <img src="docs/screenshots/painel_1.png" alt="Painel de métricas" width="100%"> | <img src="docs/screenshots/swagger.png" alt="Documentação Swagger da API" width="100%"> |
-| Volume total, distribuição por patologia, telemetria de tokens e custos estimados por LLM. | API RESTful assíncrona documentada automaticamente (OpenAPI 3.1) com autenticação JWT. |
+| <img src="docs/screenshots/predicao_1.png" alt="Predição com Grad-CAM" width="100%"> | <img src="docs/screenshots/laudo_comparativo.png" alt="Consenso Radiológico Multi-IA" width="100%"> |
+| Mapa de calor Grad-CAM destacando opacidades pulmonares com slider de opacidade e presets de windowing (*Osso, Pulmão, Mediastino*). | Painel de consenso comparando diagnósticos, achados, CID-10 e divergências entre múltiplos modelos neurais (Gemini, DeepSeek, Qwen, etc.). |
 
-| Histórico Clínico & Filtro OOD | Detalhe Diagnóstico & Probabilidades |
+| Laudo Clínico & Telemetria FinOps | Painel Analítico & Epidemiologia |
 | :---: | :---: |
-| <img src="docs/screenshots/historico_1.png" alt="Histórico de predições" width="100%"> | <img src="docs/screenshots/historico_2.png" alt="Detalhe da predição" width="100%"> |
-| Histórico filtrável por patologia. Imagens que não são raio-X são marcadas como **Out of Distribution**, impedindo diagnósticos incorretos. | Distribuição calibrada de probabilidades entre todas as classes diagnósticas e visualização em alta resolução. |
+| <img src="docs/screenshots/laudo_finops.png" alt="Laudo e FinOps" width="100%"> | <img src="docs/screenshots/painel_1.png" alt="Painel de métricas" width="100%"> |
+| Laudo estruturado por IA com badge <code>⚡ Cache Hit (0 Tokens)</code>, contagem de tokens de entrada/saída, latência e custo estimado em USD. | Métricas operacionais em tempo real: volume por patologia, série temporal de triagem e vigilância epidemiológica hospitalar. |
+
+| Histórico Clínico & Rejeição OOD | Documentação Interativa da API (Swagger) |
+| :---: | :---: |
+| <img src="docs/screenshots/historico_1.png" alt="Histórico de predições" width="100%"> | <img src="docs/screenshots/swagger.png" alt="Documentação Swagger da API" width="100%"> |
+| Trilha de auditoria imutável com detecção de dados fora da distribuição (**OOD**), hash forense SHA-256 e download de laudos em PDF. | API RESTful assíncrona documentada automaticamente (OpenAPI 3.1) com suporte a uploads DICOM PS 3.15 e autenticação JWT. |
 
 ---
 
