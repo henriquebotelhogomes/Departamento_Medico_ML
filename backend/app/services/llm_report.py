@@ -110,9 +110,13 @@ PRICING_TABLE = {
     "gemini-3.8-flash": {"prompt": 0.075 / 1_000_000, "completion": 0.30 / 1_000_000},
     "gemini-2.5-flash": {"prompt": 0.075 / 1_000_000, "completion": 0.30 / 1_000_000},
     "deepseek-v4-flash": {"prompt": 0.14 / 1_000_000, "completion": 0.28 / 1_000_000},
-    "qwen3.7-plus": {"prompt": 0.40 / 1_000_000, "completion": 1.20 / 1_000_000},
-    "qwen3.7-max": {"prompt": 0.80 / 1_000_000, "completion": 2.40 / 1_000_000},
+    "deepseek-v4-flash-free": {"prompt": 0.14 / 1_000_000, "completion": 0.28 / 1_000_000},
+    "mimo-v2.5": {"prompt": 0.10 / 1_000_000, "completion": 0.20 / 1_000_000},
+    "mimo-v2.5-free": {"prompt": 0.10 / 1_000_000, "completion": 0.20 / 1_000_000},
+    "qwen-3.8-flash": {"prompt": 0.20 / 1_000_000, "completion": 0.60 / 1_000_000},
+    "qwen3.8-flash": {"prompt": 0.20 / 1_000_000, "completion": 0.60 / 1_000_000},
     "gpt-5.6-luna": {"prompt": 0.50 / 1_000_000, "completion": 1.50 / 1_000_000},
+    "gpt-6-astra": {"prompt": 0.50 / 1_000_000, "completion": 1.50 / 1_000_000},
     "deterministic-local": {"prompt": 0.0, "completion": 0.0},
 }
 
@@ -337,18 +341,22 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
         )
 
     # Map model identifier to API target
-    if "gpt" in model_choice:
-        target_model = "gpt-5.6-luna"
+    if "mimo" in model_choice:
+        target_model = "mimo-v2.5-free"
+        display_name = "Mimo-v2.5"
+        endpoint_type = "chat"
+    elif "gpt" in model_choice:
+        target_model = "gpt-6-astra"
         display_name = "GPT 5.6 Luna"
-        endpoint_type = "responses"
+        endpoint_type = "chat"
     elif "deepseek" in model_choice:
-        target_model = "deepseek-v4-flash"
+        target_model = "deepseek-v4-flash-free"
         display_name = "DeepSeek V4 Flash"
         endpoint_type = "chat"
     elif "qwen" in model_choice:
-        target_model = "qwen3.7-plus" if "plus" in model_choice else "qwen3.7-max"
-        display_name = "Qwen 3.7 Plus"
-        endpoint_type = "messages"
+        target_model = "qwen3.8-flash"
+        display_name = "Qwen 3.8 Flash"
+        endpoint_type = "chat"
     else:
         target_model = model_choice
         display_name = model_choice
@@ -357,8 +365,11 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
     t0 = time.perf_counter()
     try:
         base_url = settings.opencode_base_url.rstrip("/")
-        if not base_url.endswith("/zen/v1"):
-            base_url = f"{base_url}/zen/v1" if "/zen" not in base_url else base_url
+        if "/zen/v1" not in base_url:
+            if base_url.endswith("/v1"):
+                base_url = base_url[:-3] + "/zen/v1"
+            else:
+                base_url = f"{base_url}/zen/v1"
 
         headers = {
             "Authorization": f"Bearer {opencode_key}",
@@ -393,14 +404,14 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
                 "max_tokens": 800,
             }
 
-        async with httpx.AsyncClient(timeout=25.0) as client:
+        async with httpx.AsyncClient(timeout=30.0) as client:
             res = await client.post(url, headers=headers, json=payload)
 
-            # Se /responses retornar 404 para GPT, tenta fallback para /chat/completions
-            if res.status_code == 404 and endpoint_type == "responses":
+            # Se o modelo solicitado falhar (upstream ou cota avulsa), tenta mimo-v2.5-free
+            if res.status_code != 200 and target_model != "mimo-v2.5-free":
                 url_fallback = f"{base_url}/chat/completions"
                 payload_fallback = {
-                    "model": target_model,
+                    "model": "mimo-v2.5-free",
                     "messages": [
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt},
@@ -408,7 +419,13 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
                     "temperature": 0.2,
                     "max_tokens": 800,
                 }
-                res = await client.post(url_fallback, headers=headers, json=payload_fallback)
+                res_fallback = await client.post(
+                    url_fallback, headers=headers, json=payload_fallback
+                )
+                if res_fallback.status_code == 200:
+                    res = res_fallback
+                    display_name = f"{display_name} (via Mimo-v2.5)"
+                    target_model = "mimo-v2.5-free"
 
             latency_ms = (time.perf_counter() - t0) * 1000.0
 

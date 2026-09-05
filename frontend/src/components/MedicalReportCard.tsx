@@ -44,11 +44,11 @@ const LLM_OPTIONS: LlmOption[] = [
     color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
   },
   {
-    id: "gpt-5.6-luna",
-    name: "GPT 5.6 Luna",
-    provider: "OpenCode Go (2.050 reqs)",
-    badge: "Diagnóstico Avançado",
-    color: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30",
+    id: "mimo-v2.5",
+    name: "Mimo-v2.5",
+    provider: "OpenCode Go (Ativo)",
+    badge: "Eficiência & Estruturação",
+    color: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/30",
   },
   {
     id: "deepseek-v4-flash",
@@ -58,11 +58,18 @@ const LLM_OPTIONS: LlmOption[] = [
     color: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30",
   },
   {
-    id: "qwen3.7-plus",
-    name: "Qwen 3.7 Plus",
+    id: "qwen-3.8-flash",
+    name: "Qwen 3.8 Flash",
     provider: "OpenCode Go (5.400 reqs)",
     badge: "Precisão Anatômica",
     color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30",
+  },
+  {
+    id: "gpt-5.6-luna",
+    name: "GPT 5.6 Luna",
+    provider: "OpenCode Go (2.050 reqs)",
+    badge: "Diagnóstico Avançado",
+    color: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30",
   },
   {
     id: "deterministic-local",
