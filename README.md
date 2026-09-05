@@ -1,9 +1,9 @@
-﻿# 🩺 RadioAI — Plataforma Hospitalar de IA para Triagem e Explicabilidade Radiológica
+# 🩺 RadioAI — Plataforma Hospitalar de IA para Triagem e Explicabilidade Radiológica
 
 > Sistema médico de alta disponibilidade para suporte à decisão diagnóstica em radiografias torácicas. Incorpora **Visão Computacional (ResNet50)**, **Explicabilidade Visual (Grad-CAM)**, **Segurança Clínica com Detecção Out-of-Distribution (OOD)**, **Ingestão Hospitalar DICOM PS 3.15**, **Laudos Multi-LLM** e **Observabilidade FinOps**.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Acessar_Plataforma-10B981?style=for-the-badge&logo=google-cloud&logoColor=white)](https://radioai-1003760453129.us-central1.run.app)
-[![Cloud Run](https://img.shields.io/badge/Google_Cloud_Run-Scale--to--Zero_(/mês)-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/run)
+[![Cloud Run](https://img.shields.io/badge/Google_Cloud_Run-Scale--to--Zero_($0/mês)-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/run)
 [![CI Status](https://img.shields.io/badge/CI-100%25_Passing_(54_Tests)-brightgreen?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/henriquebotelhogomes/Departamento_Medico_ML/actions)
 [![OOD Rejection](https://img.shields.io/badge/Clinical_Safety-OOD_Rejection_Active-critical?style=for-the-badge&logo=shield)](docs/)
 [![DICOM PS 3.15](https://img.shields.io/badge/Compliance-DICOM_PS_3.15_(HIPAA/LGPD)-blueviolet?style=for-the-badge)](docs/)
@@ -17,8 +17,8 @@ Para testar a plataforma sem necessidade de clonar o repositório ou instalar de
 
 1. **Acesse a Aplicação:** [RadioAI Live Demo (Google Cloud Run)](https://radioai-1003760453129.us-central1.run.app) *(ou execute localmente via Docker)*
 2. **Credenciais One-Click:**
-   - **Usuário:** demo123
-   - **Senha:** demo123
+   - **Usuário:** `demo123`
+   - **Senha:** `demo123`
 3. **Galeria 1-Click Demo na Tela Principal:**
    - Clique em qualquer um dos **6 casos clínicos pré-carregados** (Normal, Covid-19, Pneumonia Bacteriana, Pneumonia Viral, Anomalia OOD ou Exame DICOM hospitalar).
    - **Observe:**
@@ -36,7 +36,7 @@ Para testar a plataforma sem necessidade de clonar o repositório ou instalar de
 | **Acurácia em Teste Independente** | **92.5%** (com Test-Time Augmentation) | Avaliado no dataset Kaggle (~400 imgs), nunca exposto no treinamento. |
 | **Segurança contra Falsos Diagnósticos** | **100% de Rejeição OOD** | Rejeição imediata de imagens cotidianas (cães, carros, documentos) via distância cosseno em embedding space 2048-d. |
 | **Latência de Inferência (P95)** | **< 180ms** (síncrona em CPU) | Permite triagem emergencial instantânea em salas de atendimento. |
-| **Infraestrutura & Custo Operacional** | **.00 / mês** (Google Cloud Run) | Arquitetura conteinerizada serverless com política *Scale-to-Zero* (min-instances=0). |
+| **Infraestrutura & Custo Operacional** | **$0.00 / mês** (Google Cloud Run) | Arquitetura conteinerizada serverless com política *Scale-to-Zero* (min-instances=0). |
 | **Conformidade de Privacidade** | **DICOM PS 3.15 (HIPAA / LGPD Art. 11)** | Desidentificação de PatientID, PatientName e metadados antes de qualquer persistência. |
 | **Confiabilidade de Software** | **54 Testes Automatizados** (37 backend + 17 frontend) | Pipeline de CI/CD rigoroso com Git Hooks globais (Ruff, Pytest, ESLint, Vitest). |
 
@@ -64,7 +64,7 @@ Para testar a plataforma sem necessidade de clonar o repositório ou instalar de
 
 ## 🏗️ Arquitetura do Sistema Hospitalar
 
-`mermaid
+```mermaid
 graph TD
     A[Upload do Exame: DICOM .dcm ou PNG/JPEG] --> B{Validador de Formato & Integridade}
     B -->|DICOM| C[Sanitização DICOM PS 3.15 / HIPAA De-identification]
@@ -90,17 +90,17 @@ graph TD
     N --> O[Google Gemini / GPT 5.6 Luna / DeepSeek V4 / Qwen / Mimo-v2.5]
     O --> P[Telemetria FinOps: Latência, Tokens e Custo Estimado]
     P --> Q[Estação PACS: Controles Window/Level + Impressão A4 Timbrada]
-`
+```
 
 ---
 
 ## 💎 Diferenciais Técnicos & Inovações de Engenharia
 
 ### 1. Segurança Clínica & Rejeição Out-of-Distribution (OOD)
-A maioria dos modelos em produção sofre de *falsa certeza algorítmica*: ao receber a foto de um animal ou paisagem, forçam uma predição médica com 99% de certeza. O RadioAI calcula a similaridade cosseno entre o vetor de 2048 dimensões da camada Global Average Pooling e o centróide do espaço de raios-X torácicos. Imagens fora da distribuição são **imediatamente rejeitadas** com status OUT_OF_DISTRIBUTION.
+A maioria dos modelos em produção sofre de *falsa certeza algorítmica*: ao receber a foto de um animal ou paisagem, forçam uma predição médica com 99% de certeza. O RadioAI calcula a similaridade cosseno entre o vetor de 2048 dimensões da camada Global Average Pooling e o centróide do espaço de raios-X torácicos. Imagens fora da distribuição são **imediatamente rejeitadas** com status `OUT_OF_DISTRIBUTION`.
 
 ### 2. Padrão Hospitalar DICOM PS 3.15 & Desidentificação
-Suporte nativo a arquivos .dcm médicos com remoção automática de *Protected Health Information (PHI)* — incluindo nomes, números de prontuário, CPFs e datas de nascimento — em total conformidade com a **LGPD (Art. 11)** e **HIPAA Safe Harbor**, preservando metadados radiológicos essenciais (kVp, incidência PA/AP, modalidade CR/DX).
+Suporte nativo a arquivos `.dcm` médicos com remoção automática de *Protected Health Information (PHI)* — incluindo nomes, números de prontuário, CPFs e datas de nascimento — em total conformidade com a **LGPD (Art. 11)** e **HIPAA Safe Harbor**, preservando metadados radiológicos essenciais (kVp, incidência PA/AP, modalidade CR/DX).
 
 ### 3. Observabilidade & FinOps de LLM em Tempo Real
 Ao gerar laudos radiológicos com múltiplos provedores de ponta (**Google Gemini 3.8/2.5 Flash**, **GPT 5.6 Luna**, **DeepSeek V4 Flash**, **Qwen 3.8 Flash**, **Mimo-v2.5** ou **Motor Local Offline**), a aplicação rastreia:
@@ -109,7 +109,7 @@ Ao gerar laudos radiológicos com múltiplos provedores de ponta (**Google Gemin
 - Custo financeiro estimado por exame emitido.
 
 ### 4. Human-in-the-Loop (HITL) com Biomarcadores
-Quando a rede neural identifica dúvida etiológica estreita ($\Delta < 15\%$, como no dilema clínico de 51% Pneumonia Bacteriana vs 49% Viral), o sistema aciona uma trava de segurança diagnóstica. O médico assistente pode registrar a dosagem de **Procalcitonina** e **Proteína C-Reativa (PCR)**, sobrescrevendo a conduta de forma auditada e soberana.
+Quando a rede neural identifica dúvida etiológica estreita ($\\Delta < 15\\%$, como no dilema clínico de 51% Pneumonia Bacteriana vs 49% Viral), o sistema aciona uma trava de segurança diagnóstica. O médico assistente pode registrar a dosagem de **Procalcitonina** e **Proteína C-Reativa (PCR)**, sobrescrevendo a conduta de forma auditada e soberana.
 
 ### 5. Estação PACS com Inversão Monocromática e Impressão A4
 Interface desenvolvida em React 18 e Tailwind CSS que simula uma estação radiológica moderna: ajuste de brilho (50%-200%), contraste (50%-250%), zoom tátil, slider Grad-CAM e **inversão monocromática** para identificação de nódulos sutis. O motor de impressão gera um laudo A4 timbrado pronto para carimbo e assinatura do médico radiologista.
@@ -120,41 +120,39 @@ Interface desenvolvida em React 18 e Tailwind CSS que simula uma estação radio
 
 | Conjunto | Volume | Proporção | Fonte | Finalidade |
 | :--- | :--- | :--- | :--- | :--- |
-| **Treinamento** | 4.065 imagens | 85% | Mendeley Chest X-ray (Curado) | Fine-tuning seletivo das camadas conv5_block |
+| **Treinamento** | 4.065 imagens | 85% | Mendeley Chest X-ray (Curado) | Fine-tuning seletivo das camadas `conv5_block` |
 | **Validação** | 717 imagens | 15% | Mendeley Chest X-ray (Curado) | Early stopping e ajuste de hiperparâmetros |
 | **Teste Cego** | ~400 imagens | Independente | Kaggle COVID-19 Radiography | Avaliação final de generalização sem viés |
 
 * **Prevenção de Data Leakage:** Deduplicação perceptual por hashes dHash entre os datasets.
-* **Fine-Tuning Seletivo:** 22 camadas descongeladas com learning rate 100x menor (\times 10^{-5}$) e Batch Normalization congelada para evitar instabilidade estocástica.
+* **Fine-Tuning Seletivo:** 22 camadas descongeladas com learning rate 100x menor ($1 \\times 10^{-5}$) e Batch Normalization congelada para evitar instabilidade estocástica.
 * **Test-Time Augmentation (TTA):** 10 augmentações rotacionais/contraste combinadas para elevar a acurácia no teste cego de **87.5% para 92.5%**.
 
 ---
 
 ## 🛠️ Tech Stack Completa
 
-`
-Camada               Tecnologias
-────────────────────────────────────────────────────────────────────────────
-Machine Learning     TensorFlow 2.21 · Keras 3.15 · ResNet50 · Grad-CAM · OOD Embeddings
-Padrão Hospitalar    Pydicom · DICOM PS 3.15 (Anonimização HIPAA/LGPD) · Estação PACS
-GenAI & Laudos       Google Gemini 3.8 · GPT 5.6 Luna · DeepSeek V4 · Qwen · Mimo-v2.5
-MLOps & FinOps       MLflow · Telemetria de Tokens/Custos · Drift (Chi-Squared/KS)
-Backend API          Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy 2 (async) · uv
-Frontend             React 18 · TypeScript · Tailwind CSS · TanStack Query · i18next
-Banco & Storage      SQLite (dev) / PostgreSQL (prod) · Supabase Storage · Alembic
-Cloud & DevOps       Google Cloud Run (Scale-to-Zero) · Docker Multi-Stage · GitHub Actions
-Garantia Qualidade   Ruff Linter · Pytest (37 testes) · Vitest (17 testes) · Git Hooks
-`
+| Camada | Tecnologias |
+| :--- | :--- |
+| **Machine Learning & Visão** | TensorFlow 2.21 · Keras 3.15 · ResNet50 · Grad-CAM · OOD Embeddings (GAP 2048-d) |
+| **Padrão Hospitalar** | Pydicom · DICOM PS 3.15 (Anonimização HIPAA/LGPD) · Estação PACS |
+| **GenAI & Laudos Clínicos** | Google Gemini 3.8 · GPT 5.6 Luna · DeepSeek V4 · Qwen 3.8 · Mimo-v2.5 · Motor Local |
+| **MLOps & FinOps** | MLflow · Telemetria de Tokens/Custos em Tempo Real · Drift (Chi-Squared/KS) |
+| **Backend API** | Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy 2 (async) · uv · SlowAPI |
+| **Frontend PACS** | React 18 · TypeScript · Tailwind CSS · TanStack Query · i18next · Lucide |
+| **Banco & Storage** | SQLite (dev) / PostgreSQL (prod) · Supabase Storage · Alembic Migrations |
+| **Cloud & DevOps** | Google Cloud Run (Scale-to-Zero $0/mês) · Docker Multi-Stage · GitHub Actions |
+| **Garantia de Qualidade** | Ruff Linter · Pytest (37 testes) · Vitest (17 testes) · Git Hooks Globais |
 
 ---
 
 ## 🚀 Como Executar Localmente
 
 ### Pré-requisitos
-- Python 3.12+ (com gerenciador uv instalado)
+- Python 3.12+ (com gerenciador `uv` instalado)
 - Node.js 20+ e npm
 
-`ash
+```bash
 # 1. Clonar repositório
 git clone https://github.com/henriquebotelhogomes/Departamento_Medico_ML.git
 cd Departamento_Medico_ML
@@ -168,31 +166,31 @@ uv run uvicorn app.main:app --reload --port 8000
 cd ../frontend
 npm install
 npm run dev
-`
+```
 
-Acesse **http://localhost:5173** e entre com **demo123 / demo123**.
+Acesse **`http://localhost:5173`** e entre com **`demo123` / `demo123`**.
 
 ### Executando com Docker Compose
-`ash
+```bash
 docker compose up --build
 # Aplicação pronta em http://localhost:5173 (API em http://localhost:8000)
-`
+```
 
 ---
 
-## ☁️ Deploy em Produção (Google Cloud Run — /mês)
+## ☁️ Deploy em Produção (Google Cloud Run — $0/mês)
 
-A aplicação conta com arquitetura conteinerizada multi-stage pronta para deploy no **Google Cloud Run** com política *Scale-to-Zero* (custo  quando ocioso):
+A aplicação conta com arquitetura conteinerizada multi-stage pronta para deploy no **Google Cloud Run** com política *Scale-to-Zero* (custo $0 quando ocioso):
 
 ### No Windows (PowerShell):
-`powershell
+```powershell
 powershell -ExecutionPolicy Bypass -File scripts/deploy_cloud_run.ps1 -ProjectId "SEU_PROJETO_GCP"
-`
+```
 
 ### No Linux / macOS (Bash):
-`ash
+```bash
 bash scripts/deploy_cloud_run.sh
-`
+```
 
 ---
 
@@ -200,7 +198,7 @@ bash scripts/deploy_cloud_run.sh
 
 O repositório possui rigorosa política de testes e qualidade, impedindo commits com falhas:
 
-`ash
+```bash
 # Backend (37 testes: autenticação, inferência, OOD, DICOM e laudos Multi-LLM)
 cd backend && uv run python -m pytest tests/ -q
 
@@ -209,7 +207,7 @@ cd frontend && npm test -- --run
 
 # Linter estrito (Ruff: line-length = 100)
 cd backend && uv run ruff check app
-`
+```
 
 ---
 
@@ -221,4 +219,4 @@ cd backend && uv run ruff check app
 
 ## 📄 Licença
 
-Distribuído sob a licença **MIT**. Consulte LICENSE para mais detalhes.
+Distribuído sob a licença **MIT**. Consulte `LICENSE` para mais detalhes.
