@@ -126,8 +126,9 @@ async def test_llm_telemetry_and_finops_calculation(client: httpx.AsyncClient) -
     assert "telemetry" in report_gemini
     tel_gemini = report_gemini["telemetry"]
     assert tel_gemini is not None
-    assert tel_gemini["latency_ms"] > 0
+    assert tel_gemini["latency_ms"] >= 0.0
     if not tel_gemini["fallback_triggered"]:
+        assert tel_gemini["latency_ms"] > 0
         assert tel_gemini["prompt_tokens"] > 0
         assert tel_gemini["completion_tokens"] > 0
         assert tel_gemini["estimated_cost_usd"] > 0.0

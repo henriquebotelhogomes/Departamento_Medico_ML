@@ -188,12 +188,14 @@ def _generate_deterministic_report(
 
 async def generate_medical_report(req: ReportRequest) -> ReportResponse:
     """Route report generation request to the selected LLM or local fallback engine."""
+    t_start = time.perf_counter()
     model_choice = (req.model or "gemini-3.8-flash").lower().strip()
 
     # If local engine explicitly requested, return immediately
     if "local" in model_choice or "deterministic" in model_choice:
-        t0 = time.perf_counter()
-        rep = _generate_deterministic_report(req, latency_ms=(time.perf_counter() - t0) * 1000.0)
+        rep = _generate_deterministic_report(
+            req, latency_ms=(time.perf_counter() - t_start) * 1000.0
+        )
         return rep
 
     # Prepare clinical prompt for all LLMs
@@ -263,7 +265,9 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
         api_key = settings.gemini_api_key
         if not api_key:
             return _generate_deterministic_report(
-                req, fallback_reason="GEMINI_API_KEY não configurada"
+                req,
+                fallback_reason="GEMINI_API_KEY não configurada",
+                latency_ms=(time.perf_counter() - t_start) * 1000.0,
             )
         t0 = time.perf_counter()
         try:
@@ -327,7 +331,9 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
     opencode_key = settings.opencode_api_key
     if not opencode_key:
         return _generate_deterministic_report(
-            req, fallback_reason="OPENCODE_API_KEY não configurada"
+            req,
+            fallback_reason="OPENCODE_API_KEY não configurada",
+            latency_ms=(time.perf_counter() - t_start) * 1000.0,
         )
 
     # Map model identifier to API target
