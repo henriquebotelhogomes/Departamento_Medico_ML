@@ -56,9 +56,11 @@ class Settings(BaseSettings):
     ood_threshold: float = 0.45  # cosine similarity below this → out-of-distribution
     ood_reference_dir: str = "../examples"  # directory with known X-ray images
 
-    # ---- Rate Limits ----
+    # ---- Rate Limits & FinOps Caps ----
     rate_limit_prediction: str = "60/minute"
-    rate_limit_report: str = "60/minute"
+    rate_limit_report: str = "10/minute"
+    llm_daily_quota: int = 100
+    llm_cache_enabled: bool = True
 
     # ---- Multi-LLM Report Generation ----
     gemini_api_key: str = ""

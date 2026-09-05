@@ -16,6 +16,7 @@ import {
   BarChart2,
   DollarSign,
   AlertTriangle,
+  Zap,
 } from "lucide-react";
 import { generateReport } from "@/lib/api";
 import type { PredictionResult, ReportResponse } from "@/lib/types";
@@ -451,6 +452,11 @@ ${activeReport.disclaimer}
                         <span className="inline-flex items-center space-x-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-300 border border-amber-500/30">
                           <AlertTriangle className="h-3 w-3" />
                           <span>Degradação / Fallback</span>
+                        </span>
+                      ) : activeReport.telemetry.cached ? (
+                        <span className="inline-flex items-center space-x-1 rounded-full bg-cyan-500/10 px-2 py-0.5 text-[10px] font-bold text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">
+                          <Zap className="h-3 w-3 text-cyan-500" />
+                          <span>⚡ Cache Hit (0 Tokens)</span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">

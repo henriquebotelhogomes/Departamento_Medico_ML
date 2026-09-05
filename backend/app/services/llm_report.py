@@ -11,7 +11,9 @@ Supports:
 from __future__ import annotations
 
 import datetime
+import hashlib
 import time
+from threading import Lock
 
 import httpx
 
@@ -20,6 +22,46 @@ from app.core.logging import get_logger
 from app.schemas.prediction import LLMTelemetry, ReportRequest, ReportResponse
 
 logger = get_logger(__name__)
+
+# In-memory LRU-like cache and daily FinOps quota tracking
+_REPORT_CACHE: dict[str, ReportResponse] = {}
+_DAILY_QUOTA_LOCK = Lock()
+_DAILY_QUOTA_DATE: datetime.date | None = None
+_DAILY_EXTERNAL_CALLS: int = 0
+
+
+def _get_cache_key(req: ReportRequest, model_choice: str) -> str:
+    effective_label = req.override_label or req.label
+    probs_str = ""
+    if req.probs:
+        probs_str = ";".join(f"{p.label}:{round(p.probability, 2)}" for p in req.probs)
+    raw = (
+        f"{model_choice}|{effective_label}|{round(req.confidence, 2)}|"
+        f"{bool(req.is_ambiguous)}|{req.override_notes or ''}|{probs_str}"
+    )
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def _check_and_increment_daily_quota(limit: int) -> bool:
+    """Return True if within quota, False if daily cap reached."""
+    global _DAILY_QUOTA_DATE, _DAILY_EXTERNAL_CALLS
+    today = datetime.datetime.now(datetime.UTC).date()
+    with _DAILY_QUOTA_LOCK:
+        if today != _DAILY_QUOTA_DATE:
+            _DAILY_QUOTA_DATE = today
+            _DAILY_EXTERNAL_CALLS = 0
+        if limit <= _DAILY_EXTERNAL_CALLS:
+            return False
+        _DAILY_EXTERNAL_CALLS += 1
+        return True
+
+
+def _store_in_cache(key: str, rep: ReportResponse) -> None:
+    """Store report in cache, keeping memory bounded to 500 entries."""
+    if len(_REPORT_CACHE) > 500:
+        first_key = next(iter(_REPORT_CACHE))
+        del _REPORT_CACHE[first_key]
+    _REPORT_CACHE[key] = rep
 
 # Medical ICD-10 and Clinical findings reference dictionary
 CLINICAL_KNOWLEDGE = {
@@ -202,6 +244,29 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
         )
         return rep
 
+    # 1. Check intelligent in-memory cache
+    cache_key = _get_cache_key(req, model_choice)
+    if settings.llm_cache_enabled and cache_key in _REPORT_CACHE:
+        cached_rep = _REPORT_CACHE[cache_key].model_copy(deep=True)
+        if cached_rep.telemetry:
+            cached_rep.telemetry.latency_ms = round((time.perf_counter() - t_start) * 1000.0, 2)
+            cached_rep.telemetry.cached = True
+        logger.info("llm_report_cache_hit", model=model_choice, key=cache_key[:8])
+        return cached_rep
+
+    # 2. Check FinOps daily quota cap before calling external APIs
+    if not _check_and_increment_daily_quota(settings.llm_daily_quota):
+        logger.warning("llm_daily_quota_reached", limit=settings.llm_daily_quota)
+        return _generate_deterministic_report(
+            req,
+            fallback_reason=(
+                f"Cota diária de demonstração pública atingida ({settings.llm_daily_quota} "
+                "laudos/dia). Para controle de custos FinOps, o laudo foi gerado pelo "
+                "Motor Clínico Local."
+            ),
+            latency_ms=(time.perf_counter() - t_start) * 1000.0,
+        )
+
     # Prepare clinical prompt for all LLMs
     probs_info = ""
     if req.probs:
@@ -310,12 +375,15 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
                         estimated_cost_usd=cost,
                         fallback_triggered=False,
                     )
-                    return _parse_llm_response(
+                    rep = _parse_llm_response(
                         raw_text,
                         model_name="Gemini 3.8 Flash",
                         provider="Google AI",
                         telemetry=telemetry,
                     )
+                    if settings.llm_cache_enabled:
+                        _store_in_cache(cache_key, rep)
+                    return rep
                 logger.warning("gemini_api_error", status_code=res.status_code, body=res.text)
                 return _generate_deterministic_report(
                     req,
@@ -461,12 +529,15 @@ async def generate_medical_report(req: ReportRequest) -> ReportResponse:
                     fallback_triggered=False,
                 )
 
-                return _parse_llm_response(
+                rep = _parse_llm_response(
                     raw_text,
                     model_name=display_name,
                     provider="OpenCode Go",
                     telemetry=telemetry,
                 )
+                if settings.llm_cache_enabled:
+                    _store_in_cache(cache_key, rep)
+                return rep
             logger.warning("opencode_api_error", status_code=res.status_code, body=res.text)
             return _generate_deterministic_report(
                 req,

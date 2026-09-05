@@ -70,6 +70,7 @@ export interface LLMTelemetry {
   estimated_cost_usd: number;
   fallback_triggered: boolean;
   fallback_reason?: string | null;
+  cached?: boolean;
 }
 
 export interface ReportResponse {

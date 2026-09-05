@@ -55,6 +55,7 @@ class LLMTelemetry(BaseModel):
     estimated_cost_usd: float = 0.0
     fallback_triggered: bool = False
     fallback_reason: str | None = None
+    cached: bool = False
 
 
 class ReportResponse(BaseModel):
