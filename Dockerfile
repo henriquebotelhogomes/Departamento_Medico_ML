@@ -19,7 +19,7 @@ ENV PYTHONUNBUFFERED=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     ENVIRONMENT=production \
-    STORAGE_BACKEND=supabase
+    STORAGE_BACKEND=local
 
 WORKDIR /app
 
@@ -34,10 +34,13 @@ RUN uv sync --frozen --no-dev
 # Bundle the built SPA so FastAPI can serve it at "/"
 COPY --from=frontend /web/dist ./app/static
 
+# Copy reference examples for OOD embedding calibration
+COPY examples/ ./examples/
+
 # Inference model (tracked via Git LFS at the repo root; resolved to real bytes
 # by the host on checkout — HF Spaces / Render / CI all pull LFS before build).
 COPY modelo_raiox_mendeley_ft.keras ./app/ml/artifacts/model.keras
 
 EXPOSE 8000
-# Render/HF provide $PORT; default to 8000 locally.
+# Render/Cloud Run/HF provide $PORT; default to 8000.
 CMD ["sh", "-c", "uv run uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

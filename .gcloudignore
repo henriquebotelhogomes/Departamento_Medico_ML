@@ -1,0 +1,35 @@
+﻿# Git & GitHub
+.git/
+.github/
+
+# Ambientes virtuais e dependencias
+.venv/
+backend/.venv/
+node_modules/
+frontend/node_modules/
+frontend/dist/
+backend/app/static/
+
+# Dados locais e logs
+*.db
+backend/data/
+uploads/
+*.log
+.ruff_cache/
+.pytest_cache/
+
+# Datasets brutos (desnecessarios para o container de producao)
+Dataset/
+Dataset_mendeley/
+Test/
+test/
+dataset/
+research/
+training/mlruns/
+docs/
+site/
+
+# Modelos Keras de backup (apenas modelo_raiox_mendeley_ft.keras vai para producao)
+modelo_raiox.keras
+modelo_raiox_backup_80pct.keras
+modelo_raiox_mendeley.keras

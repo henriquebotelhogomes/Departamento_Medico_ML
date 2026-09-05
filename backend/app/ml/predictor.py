@@ -120,13 +120,24 @@ class Predictor:
         """Compute mean embedding from reference X-ray images for OOD detection."""
         if self._conv_layer_idx is None or self._gap_layer_idx is None:
             return
-        if self.ood_reference_dir is None or not self.ood_reference_dir.exists():
+        ref_dir = self.ood_reference_dir
+        if ref_dir is None or not ref_dir.exists():
+            for fallback in [
+                Path("./examples"),
+                Path("../examples"),
+                Path("./app/ml/artifacts/examples"),
+            ]:
+                if fallback.exists():
+                    ref_dir = fallback
+                    break
+
+        if ref_dir is None or not ref_dir.exists():
             logger.warning("ood_reference_dir_missing", path=str(self.ood_reference_dir))
             return
 
         # Collect reference image files
         extensions = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
-        ref_files = [f for f in self.ood_reference_dir.iterdir() if f.suffix.lower() in extensions]
+        ref_files = [f for f in ref_dir.iterdir() if f.suffix.lower() in extensions]
         if not ref_files:
             logger.warning("ood_no_reference_images")
             return

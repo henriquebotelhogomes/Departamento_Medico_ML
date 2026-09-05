@@ -14,9 +14,14 @@ uploads/
 docs/
 site/
 Dataset/
+Dataset_mendeley/
 Test/
 test/
 dataset/
 research/
+training/mlruns/
 .env
 *.log
+modelo_raiox.keras
+modelo_raiox_backup_80pct.keras
+modelo_raiox_mendeley.keras

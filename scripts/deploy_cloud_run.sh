@@ -22,13 +22,13 @@ echo "⚙️  Service:     $SERVICE_NAME"
 echo "💰 Policy:      Scale-to-Zero (min-instances=0 -> $0 cost when idle)"
 echo "------------------------------------------------------------------"
 
-# 1. Pull Git LFS model
-echo "📥 Ensuring Git LFS model weights are present..."
-git lfs pull
+# 1. Enable required APIs
+echo "🔧 Ensuring Cloud Run and Cloud Build APIs are enabled..."
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com --project "$PROJECT_ID"
 
 # 2. Build and submit to Cloud Build
 echo "🐳 Building container image in Google Cloud..."
-gcloud builds submit --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:latest" .
+gcloud builds submit --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:latest" . --project "$PROJECT_ID"
 
 # 3. Deploy to Cloud Run
 echo "⚡ Deploying container to Cloud Run..."
@@ -37,11 +37,12 @@ gcloud run deploy "$SERVICE_NAME" \
   --region "$REGION" \
   --platform managed \
   --allow-unauthenticated \
-  --memory 1Gi \
+  --memory 2Gi \
   --cpu 1 \
   --min-instances 0 \
   --max-instances 2 \
-  --port 8000
+  --port 8000 \
+  --project "$PROJECT_ID"
 
 URL=$(gcloud run services describe "$SERVICE_NAME" --platform managed --region "$REGION" --format 'value(status.url)')
 echo "------------------------------------------------------------------"
